@@ -1,9 +1,0 @@
-<div class="wrapper" [dropTarget]="target">
-    <app-square [black]="black">
-        <ng-content></ng-content>
-    </app-square>
-    <div class="overlay"
-         *ngIf="showOverlay$|async"
-         [ngStyle]="overlayStyle$|async">
-    </div>
-</div>

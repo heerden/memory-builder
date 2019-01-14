@@ -10,12 +10,6 @@ import { ProfilePageComponent } from './components/profile/profile-page/profile-
 
 import { CountdownComponent } from './components/countdown/countdown.component';
 
-import { BoardComponent } from './components/chess-demo/board/board.component';
-import { KnightComponent } from './components/chess-demo/knight/knight.component';
-import { SquareComponent } from './components/chess-demo/square/square.component';
-import { BoardSquareComponent } from './components/chess-demo/boardsquare/boardsquare.component'
-import { GameService } from './components/chess-demo/services/game.service';
-
 import { MemoryGameComponent } from './components/memory/memory-game/memory-game.component';
 import { MemoryBlockComponent } from './components/memory/memory-block/memory-block.component';
 import { SelectGridComponent } from './components/memory/select-grid/select-grid.component';
@@ -26,12 +20,8 @@ import { MemoryService } from './services/memory.service';
 @NgModule({
   declarations: [
     AppComponent,
-    BoardComponent,
-    KnightComponent,
     ProfilePageComponent,
     CountdownComponent,
-    SquareComponent,
-    BoardSquareComponent,
     MemoryGameComponent,
     MemoryBlockComponent,
     SelectGridComponent,
@@ -44,9 +34,8 @@ import { MemoryService } from './services/memory.service';
     SkyhookDndModule.forRoot({ backend: HTML5Backend }),
   ],
   providers: [
-    GameService,
     MemoryService,
   ],
   bootstrap: [AppComponent]
-})
+}
 export class AppModule { }
