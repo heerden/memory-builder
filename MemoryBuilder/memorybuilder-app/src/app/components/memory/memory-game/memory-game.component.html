@@ -1,0 +1,15 @@
+<app-select-grid></app-select-grid>
+
+<br>
+
+<div *ngIf="round == 0"><button (click)="startBlocksButton()">Start Blocks</button></div>
+<div *ngIf="round > 0"><button (click)="nextBlocksButton()">Next Blocks</button> You are playing round {{round}}.</div>
+<ng-container >
+<div *ngIf="isCorrect">Your memory is failing you! Please try again.</div>
+</ng-container>
+
+<br>
+
+<div *ngIf="round > 0">
+    <app-memory-grid></app-memory-grid>
+</div>

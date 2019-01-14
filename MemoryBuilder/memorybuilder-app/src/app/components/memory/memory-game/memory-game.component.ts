@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { MemoryService } from 'src/app/services/memory.service';
 
 @Component({
   selector: 'app-memory-game',
@@ -7,35 +8,50 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MemoryGameComponent implements OnInit {
 
-  constructor() { 
-  }
+  interval: any;
+  showTime: number;
+  round: number;
+  isShowing: boolean;
+  isCorrect: boolean;
+  isCorrect$ = this.memory.isCorrect$;
 
-  emojis: string[];
+  constructor(private memory: MemoryService) { }
 
   ngOnInit() {
-    this.emojis = [];
+    this.round = 0;
+    this.showTime = 0;
 
   }
 
-  appendItem() {
-    const emoji = '🍺 Beer Me'
-    this.emojis.push(emoji);
-    console.log(this.emojis);
-    //this.docRef.update({ 
-    //  favs: firestore.FieldValue.arrayUnion(emoji) 
-    //})
+  startBlocksButton() {
+    this.round = this.memory.startRound();
+
+    this.nextBlocksButton();
   }
 
-  removeItem(emoji) {
-    console.log(this.emojis);
+  nextBlocksButton() {
 
-    var index = this.emojis.indexOf(emoji);
-    if (index > -1) {
-      this.emojis.splice(index, 1);
+    this.round = this.memory.nextRound();
+    console.log("NExt: " + this.isCorrect$.value);
+
+    if (this.isCorrect$.value) {
+      console.log("Start NExt");
+      this.isShowing = true;
+      this.interval = setInterval(() => {
+        console.log(this.showTime);
+        this.showTime += 1;
+
+        if (this.showTime >= 2) {
+          console.log("Cleared");
+          clearInterval(this.interval);
+          this.showTime = 0;
+          this.memory.setIsShowing(false);
+        }
+      }, 1000);
     }
-    //this.docRef.update({ 
-    //  favs:  firestore.FieldValue.arrayRemove(emoji) 
-    //})
-  }  
+  }
 
+  correctValue() {
+    return this.memory.isCorrect$.value;
+  }
 }

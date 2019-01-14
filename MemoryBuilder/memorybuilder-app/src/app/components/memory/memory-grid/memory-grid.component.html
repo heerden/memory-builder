@@ -1,0 +1,7 @@
+<div class="memory-grid">
+  <ng-container *ngIf="memoryGrid$|async as grid">
+    <div class="square-container" *ngFor="let m of grid">
+      <app-memory-block [memoryBlock]="m"></app-memory-block>
+    </div>
+  </ng-container>
+</div>
