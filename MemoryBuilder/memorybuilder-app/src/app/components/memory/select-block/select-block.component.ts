@@ -9,11 +9,11 @@ import { Colours } from 'src/app/interfaces/colours'
 })
 export class SelectBlockComponent implements OnInit {
 
-  @Input() colorPos: number;
+  @Input() colourPos: number;
 
   sourceBlock = this.dnd.dragSource("MEMORY", {
     beginDrag: () => ({
-      colorPos: this.colorPos
+      colourPos: this.colourPos
     })
   });
 
@@ -30,7 +30,7 @@ export class SelectBlockComponent implements OnInit {
   }
 
   getStyle() {
-    var col = this.colorPos;
+    var col = this.colourPos;
     return { backgroundColor: Colours[col]};
   }
 

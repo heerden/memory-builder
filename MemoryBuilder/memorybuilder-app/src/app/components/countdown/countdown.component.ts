@@ -17,7 +17,7 @@ export class CountdownComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.dateTarget = new Date('20 January, 2019 12:00');
+    this.dateTarget = new Date('31 January, 2019 12:00');
     this.setCountDown(); // to have output values oninit
 
     this.interval = setInterval(() => {

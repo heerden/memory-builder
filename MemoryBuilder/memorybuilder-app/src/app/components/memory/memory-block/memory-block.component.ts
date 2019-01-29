@@ -13,20 +13,22 @@ export class MemoryBlockComponent implements OnInit {
 
   @Input() memoryBlock: any;
   pos: number;
-  colorPos: number;
-  new: boolean;
+  colourPos: number;
+  canDrop: boolean;
+  question: boolean;
 
   targetBlock = this.dnd.dropTarget("MEMORY", {
     canDrop: monitor => {
-      return this.new
+      return this.canDrop
     },
     drop: monitor => {
       var block = monitor.getItem();
-      this.colorPos = block["colorPos"];
+      this.colourPos = block["colourPos"];
+      this.question = false;
 
-      this.memory.updateMemoryGrid(this.pos, this.colorPos);
-      
-      console.log("Position: " + this.pos + " Colour: " + this.colorPos);
+      this.memory.updateMemoryGrid(this.pos, this.colourPos, false);
+
+      //console.log("Dropping:: Position: " + this.pos + " Colour: " + this.colourPos, " Question: " + this.question);
     }
   });
 
@@ -34,8 +36,10 @@ export class MemoryBlockComponent implements OnInit {
 
   ngOnInit() {
     this.pos = this.memoryBlock["pos"]
-    this.colorPos = this.memoryBlock["colorPos"];
-    this.new = true;
+    this.colourPos = this.memoryBlock["colourPos"];
+    this.canDrop = this.memoryBlock["canDrop"];
+    this.question = this.memoryBlock["question"];
+    //console.log("Init:: Position: " + this.pos + " Colour: " + this.colourPos, " Question: " + this.question);
   }
 
   ngOnDestroy() {
@@ -43,7 +47,7 @@ export class MemoryBlockComponent implements OnInit {
   }
 
   getStyle() {
-    return { backgroundColor: Colours[this.colorPos]};
+    return { backgroundColor: Colours[this.colourPos]};
   }
 
 }

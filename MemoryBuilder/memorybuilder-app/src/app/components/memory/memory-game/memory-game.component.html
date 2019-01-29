@@ -2,10 +2,10 @@
 
 <br>
 
-<div *ngIf="round == 0"><button (click)="startBlocksButton()">Start Blocks</button></div>
-<div *ngIf="round > 0"><button (click)="nextBlocksButton()">Next Blocks</button> You are playing round {{round}}.</div>
+<div *ngIf="round == 0"><button (click)="startGameButton()">Start Blocks</button></div>
+<div *ngIf="round > 0"><button (click)="nextRoundButton()">Next Blocks</button><button (click)="restartButton()">Restart</button> You are playing round {{round}}.</div>
 <ng-container >
-<div *ngIf="isCorrect">Your memory is failing you! Please try again.</div>
+<div *ngIf="notCorrectValue()">Your memory is failing you! Please try again.</div>
 </ng-container>
 
 <br>

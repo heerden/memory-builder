@@ -37,5 +37,6 @@ import { MemoryService } from './services/memory.service';
     MemoryService,
   ],
   bootstrap: [AppComponent]
-}
+})
+
 export class AppModule { }
