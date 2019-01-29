@@ -1,8 +1,21 @@
+:root {
+    --rowNum: 1;
+    --gridHeight: 80px;
+    --totalHeight: 80px;
+}
+
 .memory-grid {
     width: 640px;
-    height: 640px;
+    //height: var(--totalHeight);
     border: 1px solid black;
     display: grid;
-    grid-template-columns: repeat(8, 12.5%);
-    grid-template-rows: repeat(8, 12.5%);
+    grid-template-columns: repeat(8, auto);
+    //grid-template-rows: repeat(var(--rowNum), var(--gridHeight));
+}
+
+.grid-item {
+    grid-column-start: auto;
+    grid-row-start: auto;
+    min-height: 80px;
+    //margin: 5px;
 }

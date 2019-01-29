@@ -54,7 +54,7 @@ export class MemoryService {
 
     let gridCell = {
       pos: p,
-      colourPos: Math.floor(Math.random() * this.startGrid),
+      colourPos: Math.floor(Math.random() * this.colourSelect),
       canDrop: true,
       question: false    
     }; 
@@ -64,7 +64,7 @@ export class MemoryService {
       pos: p,
       colourPos: 3,
       canDrop: true,
-      question: false    
+      question: true    
     }; 
     this.memoryWhite.push(whiteCell);
   }
@@ -93,8 +93,8 @@ export class MemoryService {
 
     // settings
     this.startGrid = 3;
-    this.colourSelect = 8;
-    this.timeInterval = 2;
+    this.colourSelect = 6;
+    this.timeInterval = 5;
 
     this.memoryGrid = new Array;
     this.memoryRetain = new Array;
@@ -118,7 +118,6 @@ export class MemoryService {
 
       console.log(this.round-1);
       this.setMemoryBlock(this.startGrid + this.round-2);
-      //this.AlertAlert();
 
       this.startShowTimer();
 
@@ -132,8 +131,8 @@ export class MemoryService {
 
   colourArray (memory: Array<any>) {
 
+    // for cheat colours in the console
     let colouring = new Array<any>();
-    // cheat colours in the console
     for (var i = 0; i < memory.length; i++) {
       let grid = memory[i]["colourPos"];
       colouring.push(Colours[grid]);
@@ -141,21 +140,10 @@ export class MemoryService {
     console.log(colouring);
   }
 
-  AlertAlert () {
-
-    let colouring = new Array<any>();
-    // cheat colours in the console
-    for (var i = 0; i < this.memoryRetain.length; i++) {
-      let grid = this.memoryRetain[i]["pos"];
-      colouring.push(grid);
-    }
-    console.log(colouring);
-  }
-
   startShowTimer() {
 
     this.memoryGrid$.next(this.memoryRetain);
-    //this.memoryGrid = this.memoryWhite.slice(); // otherwise memory alloc is linked, also set here to avoid equal comparison before interval complete
+    this.memoryGrid = this.memoryWhite.slice(); // otherwise memory alloc is linked, also set here to avoid equal comparison before interval complete. hide for quick testing
 
     console.log("Start next round");
     //this.colourArray(this.memoryGrid);
@@ -175,7 +163,7 @@ export class MemoryService {
         this.isShowingMemoryGrid$.next(false);
 
         this.memoryGrid$.next(this.memoryWhite);
-        this.memoryGrid = this.memoryWhite.slice(); // otherwise memory alloc is linked, also set here to avoid equal comparison before interval complete
+        //this.memoryGrid = this.memoryWhite.slice();
       }
     }, 1000);
   }
