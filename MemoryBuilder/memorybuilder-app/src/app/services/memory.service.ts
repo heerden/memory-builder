@@ -129,7 +129,7 @@ export class MemoryService {
 
         this.round += 1;
 
-        console.log(this.round-1);
+        console.log("Round: " + (this.round-1));
         this.setMemoryBlock(this.startGrid$.value + this.round-2);
 
         this.startShowTimer();
@@ -168,7 +168,7 @@ export class MemoryService {
 
     if (this.isCorrect$.value) {
       this.timeInterval = (this.startGrid$.value + this.round - 1) * this.roundTime$.value - this.timePenalty;
-      if (this.round = 1) {      
+      if (this.round == 1) {     
         this.activeMessage$.next('Memorise time: ' + this.timeInterval + ' seconds.')
 
       } else {
