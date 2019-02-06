@@ -7,9 +7,10 @@
 .memory-grid {
     width: 640px;
     //height: var(--totalHeight);
-    border: 1px solid black;
+    //border: 1px solid black;
     display: grid;
     grid-template-columns: repeat(8, auto);
+    grid-gap: 3px;
     //grid-template-rows: repeat(var(--rowNum), var(--gridHeight));
 }
 

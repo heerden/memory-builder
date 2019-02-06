@@ -9,13 +9,11 @@ import { MemoryService } from 'src/app/services/memory.service';
 export class MemoryGameComponent implements OnInit {
 
   round: number;
-  isCorrect$ = this.memory.isCorrect$;
 
   constructor(private memory: MemoryService) { }
 
   ngOnInit() {
     this.restartButton();
-
   }
 
   startGameButton() {
@@ -33,4 +31,9 @@ export class MemoryGameComponent implements OnInit {
   notCorrectValue() {
     return !this.memory.isCorrect$.value;
   }
+
+  activeMessageValue() {
+    return this.memory.activeMessage$.value;
+  }
+
 }

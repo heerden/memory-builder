@@ -12,18 +12,21 @@ export class MemoryService {
   memoryWhite: Array<any>;
   memoryGrid$ = new BehaviorSubject<any>(null);
 
-  isShowingMemoryGrid$ = new BehaviorSubject<boolean>(true);
-  isCorrect$= new BehaviorSubject<boolean>(true);
+  isMemorising$ = new BehaviorSubject<boolean>(true);
+  isCorrect$ = new BehaviorSubject<boolean>(true);
+  activeMessage$ = new BehaviorSubject<string>('');
+
+  //settings
+  startGrid$ = new BehaviorSubject<number>(3);
+  colourSelect$ = new BehaviorSubject<number>(6);
+  roundTime$ = new BehaviorSubject<number>(3);
 
   round: number;
 
   interval: any;
   showTime: number;
-
-  //settings
-  startGrid: number;
-  colourSelect: number;
   timeInterval: number;
+  timePenalty: number;
 
   constructor() { 
 
@@ -54,7 +57,7 @@ export class MemoryService {
 
     let gridCell = {
       pos: p,
-      colourPos: Math.floor(Math.random() * this.colourSelect),
+      colourPos: Math.floor(Math.random() * this.colourSelect$.value),
       canDrop: true,
       question: false    
     }; 
@@ -89,41 +92,54 @@ export class MemoryService {
   startGame() {
 
     this.round = 1;
-    this.isShowingMemoryGrid$.next(true);
-
-    // settings
-    this.startGrid = 3;
-    this.colourSelect = 6;
-    this.timeInterval = 5;
+    this.timePenalty = 0;
+    this.isMemorising$.next(true);
 
     this.memoryGrid = new Array;
     this.memoryRetain = new Array;
     this.memoryWhite = new Array;
 
-    for (var i = 0; i < this.startGrid; i++) {
+    for (var i = 0; i < this.startGrid$.value; i++) {
       this.setMemoryBlock(i);
     }
 
+    this.isCorrect$.next(true);
     this.startShowTimer();
+
+    return this.round;
+  }
+
+  restart() {
+
+    this.showTime = 0;
+    this.round = 0;
+    this.isCorrect$.next(true);
+    this.activeMessage$.next('');
+    clearInterval(this.interval);
 
     return this.round;
   }
 
   nextRound() {
 
-    if (this.equalColours(this.memoryGrid, this.memoryRetain)) {
-      this.isCorrect$.next(true);
-      this.round += 1;
-      this.isShowingMemoryGrid$.next(true);
+    if (!this.isMemorising$.value) {
+      if (this.equalColours(this.memoryGrid, this.memoryRetain)) {
+        this.isCorrect$.next(true);
+        this.activeMessage$.next('');
 
-      console.log(this.round-1);
-      this.setMemoryBlock(this.startGrid + this.round-2);
+        this.round += 1;
 
-      this.startShowTimer();
+        console.log(this.round-1);
+        this.setMemoryBlock(this.startGrid$.value + this.round-2);
 
-    } else {
-      this.isCorrect$.next(false);
-      console.log("Correct: " + this.isCorrect$.value);
+        this.startShowTimer();
+
+      } else {
+        this.isCorrect$.next(false);
+        console.log("Correct: " + this.isCorrect$.value);
+        this.startShowTimer();
+
+      }
     }
 
     return this.round;
@@ -148,8 +164,32 @@ export class MemoryService {
     console.log("Start next round");
     //this.colourArray(this.memoryGrid);
     this.colourArray(this.memoryRetain);
+    this.isMemorising$.next(true);
 
-    this.isShowingMemoryGrid$.next(true);
+    if (this.isCorrect$.value) {
+      this.timeInterval = (this.startGrid$.value + this.round - 1) * this.roundTime$.value - this.timePenalty;
+      if (this.round = 1) {      
+        this.activeMessage$.next('Memorise time: ' + this.timeInterval + ' seconds.')
+
+      } else {
+        this.activeMessage$.next('CORRECT. Memorise time: ' + this.timeInterval + ' seconds.')
+
+      }
+
+    } else {
+      this.timePenalty += 1;
+      this.timeInterval = (this.startGrid$.value + this.round - 1) * this.roundTime$.value - this.timePenalty;
+      
+      if (this.timeInterval > 0) {
+        this.activeMessage$.next('INCORRECT. Memorise time reduced: ' + this.timeInterval + ' seconds.');
+
+      } else {
+        this.activeMessage$.next('INCORRECT. Memorise time reduced: 0 seconds. Time penalty: ' + this.timeInterval);
+
+      }
+
+    }
+
     clearInterval(this.interval);
     this.interval = setInterval(() => {
       console.log(this.showTime);
@@ -158,23 +198,16 @@ export class MemoryService {
       if (this.showTime >= this.timeInterval) {
         console.log("Cleared");
 
-        clearInterval(this.interval);
         this.showTime = 0;
-        this.isShowingMemoryGrid$.next(false);
+        this.isMemorising$.next(false);
+        this.activeMessage$.next('');
 
         this.memoryGrid$.next(this.memoryWhite);
         //this.memoryGrid = this.memoryWhite.slice();
+
+        clearInterval(this.interval);
       }
     }, 1000);
-  }
-
-  restart() {
-
-    this.showTime = 0;
-    this.round = 0;
-    this.isCorrect$.next(true);
-
-    return this.round;
   }
 
 }

@@ -8,7 +8,6 @@ import { MemoryService } from 'src/app/services/memory.service';
 })
 export class MemoryGridComponent implements OnInit {
 
-  isShowingMemoryGrid$ = this.memory.isShowingMemoryGrid$;
   memoryGrid$ = this.memory.memoryGrid$;
 
   constructor(private memory: MemoryService) { }

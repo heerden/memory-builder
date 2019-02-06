@@ -1,7 +1,8 @@
 .select-grid {
     width: 640px;
     height: 80px;
-    border: 1px solid black;
+    //border: 1px solid black;
     display: grid;
     grid-template-columns: repeat(8, auto);
+    grid-gap: 3px;
 }

@@ -2,14 +2,27 @@
 
 <br>
 
-<div *ngIf="round == 0"><button (click)="startGameButton()">Start Blocks</button></div>
-<div *ngIf="round > 0"><button (click)="nextRoundButton()">Next Blocks</button><button (click)="restartButton()">Restart</button> You are playing round {{round}}.</div>
-<ng-container >
-<div *ngIf="notCorrectValue()">Your memory is failing you! Please try again.</div>
-</ng-container>
+<div *ngIf="round == 0">
+    <p-button (click)="startGameButton()" label="Start Blocks"></p-button>
+</div>
+<div *ngIf="round > 0">
+    <p-button (click)="nextRoundButton()" label="Next Blocks"></p-button>
+    Round {{round}}. {{activeMessageValue()}}
+</div>
+
+<div *ngIf="round == 0">
+    <p>Drag and drop the colour boxes to the grid below when the game starts.</p>
+    <app-settings></app-settings>
+</div>
 
 <br>
 
 <div *ngIf="round > 0">
     <app-memory-grid></app-memory-grid>
+</div>
+
+<br>
+
+<div *ngIf="round > 0">
+    <p-button (click)="restartButton()" label="Restart"></p-button>
 </div>
