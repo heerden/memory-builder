@@ -43,7 +43,6 @@ export class MemoryService {
     let gridCell = {
       pos: pos,
       colourPos: colourPos,
-      canDrop: true,
       question: question
     }
     //console.log("UPDATING: " + pos);
@@ -58,7 +57,6 @@ export class MemoryService {
     let gridCell = {
       pos: p,
       colourPos: Math.floor(Math.random() * this.colourSelect$.value),
-      canDrop: true,
       question: false    
     }; 
     this.memoryRetain.push(gridCell);
@@ -66,7 +64,6 @@ export class MemoryService {
     let whiteCell = {
       pos: p,
       colourPos: 3,
-      canDrop: true,
       question: true    
     }; 
     this.memoryWhite.push(whiteCell);
@@ -114,7 +111,7 @@ export class MemoryService {
     this.showTime = 0;
     this.round = 0;
     this.isCorrect$.next(true);
-    this.statusMessage$.next('Memorise');
+    this.statusMessage$.next('Press Start');
     clearInterval(this.interval);
 
     return this.round;
@@ -146,6 +143,7 @@ export class MemoryService {
 
   startRound() {
     this.isMemorising$.next(false);
+    this.rememberStatus();
 
     return this.round;
   }
@@ -174,10 +172,10 @@ export class MemoryService {
     if (this.isCorrect$.value) {
       this.memInterval$.next((this.startGrid$.value + this.round - 1) * this.roundTime$.value - this.timePenalty);
       if (this.round == 1) {     
-        this.statusMessage$.next('Memorise')
+        this.statusMessage$.next('Memorise First Round Blocks')
 
       } else {
-        this.statusMessage$.next('Correct')
+        this.statusMessage$.next('Correct - Memorise Next Round Blocks')
 
       }
 
@@ -186,10 +184,10 @@ export class MemoryService {
       this.memInterval$.next((this.startGrid$.value + this.round - 1) * this.roundTime$.value - this.timePenalty);
       
       if (this.memInterval$.value > 0) {
-        this.statusMessage$.next('Incorrect');
+        this.statusMessage$.next('Incorrect - Memorise Blocks Again');
 
       } else {
-        this.statusMessage$.next('Incorrect. Time Penalty.');
+        this.statusMessage$.next('Incorrect - Memorise Blocks Again'); // - Time Penalty
 
       }
 
@@ -201,18 +199,24 @@ export class MemoryService {
       this.showTime += 1;
 
       if ((this.showTime >= this.memInterval$.value) || !this.isMemorising$.value) {
-        console.log("Cleared");
 
-        this.showTime = 0;
-        this.isMemorising$.next(false);
-        this.statusMessage$.next('Remember');
-
-        this.memoryGrid$.next(this.memoryWhite);
-        //this.memoryGrid = this.memoryWhite.slice();
-
+        this.rememberStatus();
         clearInterval(this.interval);
       }
     }, 1000);
   }
 
+  rememberStatus() {
+    console.log("Cleared");
+
+    this.showTime = 0;
+    this.isMemorising$.next(false);
+    this.statusMessage$.next('Build Blocks');
+
+    this.memoryGrid$.next(this.memoryWhite);
+    //this.memoryGrid = this.memoryWhite.slice();
+
+  }
+
 }
+

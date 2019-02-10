@@ -13,13 +13,14 @@ export class SelectGridComponent implements OnInit {
   colourSelect$ = this.memory.colourSelect$;
   colourSelect: number;
 
-  constructor(private memory: MemoryService) { 
+  constructor(private memory: MemoryService) {
 
     this.colourSelect$.subscribe(m => {
       console.log(m);
       this.colourSelect = m;
       this.selectGrid = new Array(this.colourSelect).fill(0).map((_, i) => i)
-    })}
+    })
+  }
 
   ngOnInit() {
   }

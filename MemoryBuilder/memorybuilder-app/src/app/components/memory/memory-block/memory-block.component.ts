@@ -14,12 +14,14 @@ export class MemoryBlockComponent implements OnInit {
   @Input() memoryBlock: any;
   pos: number;
   colourPos: number;
-  canDrop: boolean;
   question: boolean;
+
+  isMemorising$ = this.memory.isMemorising$;
+  isMemorising: boolean;
 
   targetBlock = this.dnd.dropTarget("MEMORY", {
     canDrop: monitor => {
-      return this.canDrop
+      return !this.isMemorising;
     },
     drop: monitor => {
       var block = monitor.getItem();
@@ -32,12 +34,16 @@ export class MemoryBlockComponent implements OnInit {
     }
   });
 
-  constructor(private dnd: SkyhookDndService, private memory: MemoryService) { }
+  constructor(private dnd: SkyhookDndService, private memory: MemoryService) { 
+
+    this.isMemorising$.subscribe(m => {
+      this.isMemorising = m;
+    })
+  }
 
   ngOnInit() {
     this.pos = this.memoryBlock["pos"]
     this.colourPos = this.memoryBlock["colourPos"];
-    this.canDrop = this.memoryBlock["canDrop"];
     this.question = this.memoryBlock["question"];
     //console.log("Init:: Position: " + this.pos + " Colour: " + this.colourPos, " Question: " + this.question);
   }

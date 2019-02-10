@@ -1,28 +1,28 @@
 <div class="container">
     <br><div class="notification is-info">
-        Remember the sequence of blocks and build then out as it grows
+        Remember the sequence of blocks and build then out as it grows. Drag and drop the colour blocks to the question grid.
         <span class="delete"></span>
     </div>
 
-    
-    <div class="columns" *ngIf="round == 0">
+    <div class="columns has-text-centered">
+            <div class="column">
+                <div class="box">
+                    <p class="heading">Status</p>
+                    <p class="title">{{statusMessageValue()}}</p> 
+                </div>    
+            </div>
         <div class="column">
-            <p class="heading">Drag and drop the colour boxes to the grid below when the game starts</p>
-            <p class="title">Press Start</p>
+            <div class="box" *ngIf="round > 0">
+                <div class="heading">Round</div>
+                <div class="title">{{round}}</div>
+            </div>
         </div>
-    </div>
-    <div class="columns" *ngIf="round > 0">
-        <div class="column col-bg">
-            <div class="heading">Round</div>
-            <div class="title">{{round}}</div>
-        </div>
-        <div class="column col-bg">
-            <p class="heading">Status</p>
-            <p class="title">{{statusMessageValue()}}</p>     
-        </div>
-        <div class="column col-bg">
-            <p class="heading">Memorise Time (s)</p>
-            <p class="title">{{memIntervalValue()}}</p>
+        <div class="column">
+            <div class="box" *ngIf="round > 0">
+                <p *ngIf="memIntervalValue() > 0" class="heading">Memorise Time (s)</p>
+                <p *ngIf="memIntervalValue() <= 0" class="heading">Penalty Time (s)</p>
+                <p class="title">{{memIntervalValue()}}</p>
+            </div>
         </div>
     </div>
 
