@@ -26,9 +26,10 @@
               "src/styles.scss",
               "node_modules/primeicons/primeicons.css",
               "node_modules/primeng/resources/themes/nova-light/theme.css",
-              "node_modules/primeng/resources/primeng.min.css"
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/bulma/css/bulma.css"
             ],
-            "scripts": []
+            "scripts": ["src/assets/js/all.js"]
           },
           "configurations": {
             "production": {

@@ -1,12 +1,15 @@
+<div class="box">
+    <p class="heading">Settings</p>
 
-<div>Number of blocks to start with: {{startGrid}}</div><br>
+    <div>Number of blocks to start with: {{startGrid}}</div><br>
 
-<p-slider [(ngModel)]="startGrid" [min]=3 [max]=10 [step]=1 [style]="{'width':'15em'}" [animate]=true (onChange)="changeStartGrid($event)"></p-slider><br>
+    <p-slider [(ngModel)]="startGrid" [min]=3 [max]=10 [step]=1 [style]="{'width':'15em'}" [animate]=true (onChange)="changeStartGrid($event)"></p-slider><br>
 
-<div>Number of colours to use: {{colourSelect}}</div><br>
+    <div>Number of colours to use: {{colourSelect}}</div><br>
 
-<p-slider [(ngModel)]="colourSelect" [min]=3 [max]=8 [step]=1 [style]="{'width':'15em'}" [animate]=true (onChange)="changeColourSelect($event)"></p-slider><br>
+    <p-slider [(ngModel)]="colourSelect" [min]=3 [max]=8 [step]=1 [style]="{'width':'15em'}" [animate]=true (onChange)="changeColourSelect($event)"></p-slider><br>
 
-<div>Memorising time added after each round: {{roundTime}}</div><br>
+    <div>Memorising time added after each round: {{roundTime}}</div><br>
 
-<p-slider [(ngModel)]="roundTime" [min]=1 [max]=10 [step]=1 [style]="{'width':'15em'}" [animate]=true (onChange)="changeRoundTime($event)"></p-slider><br>
+    <p-slider [(ngModel)]="roundTime" [min]=1 [max]=10 [step]=1 [style]="{'width':'15em'}" [animate]=true (onChange)="changeRoundTime($event)"></p-slider><br>
+</div>

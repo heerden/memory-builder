@@ -8,9 +8,18 @@ import { MemoryService } from 'src/app/services/memory.service';
 })
 export class SelectGridComponent implements OnInit {
 
-  selectGrid = new Array(8).fill(0).map((_, i) => i);
+  //selectGrid = new Array(8).fill(0).map((_, i) => i);
+  selectGrid: Array<number>;
+  colourSelect$ = this.memory.colourSelect$;
+  colourSelect: number;
 
-  constructor() { }
+  constructor(private memory: MemoryService) { 
+
+    this.colourSelect$.subscribe(m => {
+      console.log(m);
+      this.colourSelect = m;
+      this.selectGrid = new Array(this.colourSelect).fill(0).map((_, i) => i)
+    })}
 
   ngOnInit() {
   }

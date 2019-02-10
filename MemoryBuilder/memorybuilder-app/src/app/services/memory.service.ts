@@ -14,7 +14,8 @@ export class MemoryService {
 
   isMemorising$ = new BehaviorSubject<boolean>(true);
   isCorrect$ = new BehaviorSubject<boolean>(true);
-  activeMessage$ = new BehaviorSubject<string>('');
+  statusMessage$ = new BehaviorSubject<string>('');
+  memInterval$ = new BehaviorSubject<number>(0);
 
   //settings
   startGrid$ = new BehaviorSubject<number>(3);
@@ -25,7 +26,6 @@ export class MemoryService {
 
   interval: any;
   showTime: number;
-  timeInterval: number;
   timePenalty: number;
 
   constructor() { 
@@ -114,7 +114,7 @@ export class MemoryService {
     this.showTime = 0;
     this.round = 0;
     this.isCorrect$.next(true);
-    this.activeMessage$.next('');
+    this.statusMessage$.next('Memorise');
     clearInterval(this.interval);
 
     return this.round;
@@ -125,7 +125,6 @@ export class MemoryService {
     if (!this.isMemorising$.value) {
       if (this.equalColours(this.memoryGrid, this.memoryRetain)) {
         this.isCorrect$.next(true);
-        this.activeMessage$.next('');
 
         this.round += 1;
 
@@ -136,11 +135,17 @@ export class MemoryService {
 
       } else {
         this.isCorrect$.next(false);
-        console.log("Correct: " + this.isCorrect$.value);
+        //console.log("Correct: " + this.isCorrect$.value);
         this.startShowTimer();
 
       }
     }
+
+    return this.round;
+  }
+
+  startRound() {
+    this.isMemorising$.next(false);
 
     return this.round;
   }
@@ -167,24 +172,24 @@ export class MemoryService {
     this.isMemorising$.next(true);
 
     if (this.isCorrect$.value) {
-      this.timeInterval = (this.startGrid$.value + this.round - 1) * this.roundTime$.value - this.timePenalty;
+      this.memInterval$.next((this.startGrid$.value + this.round - 1) * this.roundTime$.value - this.timePenalty);
       if (this.round == 1) {     
-        this.activeMessage$.next('Memorise time: ' + this.timeInterval + ' seconds.')
+        this.statusMessage$.next('Memorise')
 
       } else {
-        this.activeMessage$.next('CORRECT. Memorise time: ' + this.timeInterval + ' seconds.')
+        this.statusMessage$.next('Correct')
 
       }
 
     } else {
       this.timePenalty += 1;
-      this.timeInterval = (this.startGrid$.value + this.round - 1) * this.roundTime$.value - this.timePenalty;
+      this.memInterval$.next((this.startGrid$.value + this.round - 1) * this.roundTime$.value - this.timePenalty);
       
-      if (this.timeInterval > 0) {
-        this.activeMessage$.next('INCORRECT. Memorise time reduced: ' + this.timeInterval + ' seconds.');
+      if (this.memInterval$.value > 0) {
+        this.statusMessage$.next('Incorrect');
 
       } else {
-        this.activeMessage$.next('INCORRECT. Memorise time reduced: 0 seconds. Time penalty: ' + this.timeInterval);
+        this.statusMessage$.next('Incorrect. Time Penalty.');
 
       }
 
@@ -195,12 +200,12 @@ export class MemoryService {
       console.log(this.showTime);
       this.showTime += 1;
 
-      if (this.showTime >= this.timeInterval) {
+      if ((this.showTime >= this.memInterval$.value) || !this.isMemorising$.value) {
         console.log("Cleared");
 
         this.showTime = 0;
         this.isMemorising$.next(false);
-        this.activeMessage$.next('');
+        this.statusMessage$.next('Remember');
 
         this.memoryGrid$.next(this.memoryWhite);
         //this.memoryGrid = this.memoryWhite.slice();

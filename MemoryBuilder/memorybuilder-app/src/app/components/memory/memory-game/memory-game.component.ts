@@ -24,16 +24,30 @@ export class MemoryGameComponent implements OnInit {
     this.round = this.memory.nextRound();
   }
 
+  startRoundButton() {
+    this.round = this.memory.startRound();
+  }
+
   restartButton() {
     this.round = this.memory.restart();
   }
 
+
+  // get value methods
   notCorrectValue() {
     return !this.memory.isCorrect$.value;
   }
 
-  activeMessageValue() {
-    return this.memory.activeMessage$.value;
+  statusMessageValue() {
+    return this.memory.statusMessage$.value;
+  }
+
+  memIntervalValue() {
+    return this.memory.memInterval$.value;
+  }
+
+  isMemorisingValue() {
+    return this.memory.isMemorising$.value;
   }
 
 }

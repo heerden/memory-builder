@@ -5,11 +5,11 @@
 }
 
 .memory-grid {
-    width: 640px;
+    width: 800px;
     //height: var(--totalHeight);
     //border: 1px solid black;
     display: grid;
-    grid-template-columns: repeat(8, auto);
+    grid-template-columns: repeat(10, auto);
     grid-gap: 3px;
     //grid-template-rows: repeat(var(--rowNum), var(--gridHeight));
 }
@@ -17,6 +17,7 @@
 .grid-item {
     grid-column-start: auto;
     grid-row-start: auto;
-    min-height: 80px;
+    height: 80px;
+    //width: 80px;
     //margin: 5px;
 }

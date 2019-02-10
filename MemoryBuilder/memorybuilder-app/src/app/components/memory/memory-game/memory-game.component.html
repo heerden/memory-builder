@@ -1,28 +1,56 @@
-<app-select-grid></app-select-grid>
+<div class="container">
+    <br><div class="notification is-info">
+        Remember the sequence of blocks and build then out as it grows
+        <span class="delete"></span>
+    </div>
 
-<br>
+    
+    <div class="columns" *ngIf="round == 0">
+        <div class="column">
+            <p class="heading">Drag and drop the colour boxes to the grid below when the game starts</p>
+            <p class="title">Press Start</p>
+        </div>
+    </div>
+    <div class="columns" *ngIf="round > 0">
+        <div class="column col-bg">
+            <div class="heading">Round</div>
+            <div class="title">{{round}}</div>
+        </div>
+        <div class="column col-bg">
+            <p class="heading">Status</p>
+            <p class="title">{{statusMessageValue()}}</p>     
+        </div>
+        <div class="column col-bg">
+            <p class="heading">Memorise Time (s)</p>
+            <p class="title">{{memIntervalValue()}}</p>
+        </div>
+    </div>
 
-<div *ngIf="round == 0">
-    <p-button (click)="startGameButton()" label="Start Blocks"></p-button>
-</div>
-<div *ngIf="round > 0">
-    <p-button (click)="nextRoundButton()" label="Next Blocks"></p-button>
-    Round {{round}}. {{activeMessageValue()}}
-</div>
+    <app-select-grid></app-select-grid><br>
 
-<div *ngIf="round == 0">
-    <p>Drag and drop the colour boxes to the grid below when the game starts.</p>
-    <app-settings></app-settings>
-</div>
+    <div *ngIf="round == 0">
+        <p-button (click)="startGameButton()" label="Start"></p-button>
+    </div>
+    <div *ngIf="round > 0 && !isMemorisingValue()">
+        <p-button (click)="nextRoundButton()" label="Next Round"></p-button>
+    </div>
+    <div *ngIf="round > 0 && isMemorisingValue()">
+        <p-button (click)="startRoundButton()" label="Start Round"></p-button>
+    </div>
 
-<br>
+    <div *ngIf="round == 0">
+        <br><app-settings></app-settings>
+    </div>
 
-<div *ngIf="round > 0">
-    <app-memory-grid></app-memory-grid>
-</div>
+    <br>
 
-<br>
+    <div *ngIf="round > 0">
+        <app-memory-grid></app-memory-grid>
+    </div>
 
-<div *ngIf="round > 0">
-    <p-button (click)="restartButton()" label="Restart"></p-button>
+    <br>
+
+    <div *ngIf="round > 0">
+        <p-button (click)="restartButton()" label="Restart"></p-button>
+    </div>
 </div>
