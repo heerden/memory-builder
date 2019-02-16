@@ -5,6 +5,10 @@
 
     <p-slider [(ngModel)]="startGrid" [min]=3 [max]=10 [step]=1 [style]="{'width':'15em'}" [animate]=true (onChange)="changeStartGrid($event)"></p-slider><br>
 
+    <div>Number of blocks to increase after every round: {{increaseGrid}}</div><br>
+
+    <p-slider [(ngModel)]="increaseGrid" [min]=1 [max]=5 [step]=1 [style]="{'width':'15em'}" [animate]=true (onChange)="changeIncreaseGrid($event)"></p-slider><br>
+
     <div>Number of colours to use: {{colourSelect}}</div><br>
 
     <p-slider [(ngModel)]="colourSelect" [min]=3 [max]=8 [step]=1 [style]="{'width':'15em'}" [animate]=true (onChange)="changeColourSelect($event)"></p-slider><br>
@@ -12,4 +16,8 @@
     <div>Memorising time added after each round: {{roundTime}}</div><br>
 
     <p-slider [(ngModel)]="roundTime" [min]=1 [max]=10 [step]=1 [style]="{'width':'15em'}" [animate]=true (onChange)="changeRoundTime($event)"></p-slider><br>
+
+    <div>Memorising penalty time reduced after incorrect answer: {{penaltyTime}}</div><br>
+
+    <p-slider [(ngModel)]="penaltyTime" [min]=1 [max]=3 [step]=1 [style]="{'width':'15em'}" [animate]=true (onChange)="changePenaltyTime($event)"></p-slider><br>
 </div>

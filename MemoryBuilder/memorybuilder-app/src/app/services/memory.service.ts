@@ -19,8 +19,10 @@ export class MemoryService {
 
   //settings
   startGrid$ = new BehaviorSubject<number>(3);
+  increaseGrid$ = new BehaviorSubject<number>(1);
   colourSelect$ = new BehaviorSubject<number>(6);
   roundTime$ = new BehaviorSubject<number>(3);
+  penaltyTime$ = new BehaviorSubject<number>(1);
 
   round: number;
 
@@ -30,12 +32,6 @@ export class MemoryService {
 
   constructor() { 
 
-    this.memoryGrid$.subscribe(m => {
-      //console.log("sup!");
-      //console.log(m);
-      //this.memoryGrid = m;
-      //console.log(this.memoryGrid);
-    })
   }
 
   updateMemoryGrid(pos: number, colourPos: number, question: boolean) {
@@ -45,15 +41,16 @@ export class MemoryService {
       colourPos: colourPos,
       question: question
     }
-    //console.log("UPDATING: " + pos);
+    console.log("UPDATING: " + pos);
     //console.log(this.memoryGrid);
     this.memoryGrid[pos] = gridCell;
-    //this.colourArray(this.memoryGrid);
+    this.colourArray(this.memoryGrid);
     //console.log(this.memoryGrid);
   }
 
-  setMemoryBlock(p: number) {
+  setMemoryBlock() {
 
+    let p = this.memoryRetain.length;
     let gridCell = {
       pos: p,
       colourPos: Math.floor(Math.random() * this.colourSelect$.value),
@@ -71,6 +68,7 @@ export class MemoryService {
 
   equalColours (memory, retain) {
 
+    //console.log("CHECKING");
     //this.colourArray(memory);
     //this.colourArray(retain);
 
@@ -96,8 +94,8 @@ export class MemoryService {
     this.memoryRetain = new Array;
     this.memoryWhite = new Array;
 
-    for (var i = 0; i < this.startGrid$.value; i++) {
-      this.setMemoryBlock(i);
+    for (let i = 0; i < this.startGrid$.value; i++) {
+      this.setMemoryBlock();//i
     }
 
     this.isCorrect$.next(true);
@@ -125,8 +123,12 @@ export class MemoryService {
 
         this.round += 1;
 
-        console.log("Round: " + (this.round-1));
-        this.setMemoryBlock(this.startGrid$.value + this.round-2);
+        console.log("Round: " + (this.round));
+        for (let m = 0; m < this.increaseGrid$.value; m++) {
+          let p = this.startGrid$.value + this.round-2 + m;
+          console.log(p);
+          this.setMemoryBlock(); //this.startGrid$.value + this.round-2 + m
+        }
 
         this.startShowTimer();
 
@@ -152,7 +154,7 @@ export class MemoryService {
 
     // for cheat colours in the console
     let colouring = new Array<any>();
-    for (var i = 0; i < memory.length; i++) {
+    for (let i = 0; i < memory.length; i++) {
       let grid = memory[i]["colourPos"];
       colouring.push(Colours[grid]);
     }
@@ -170,7 +172,6 @@ export class MemoryService {
     this.isMemorising$.next(true);
 
     if (this.isCorrect$.value) {
-      this.memInterval$.next((this.startGrid$.value + this.round - 1) * this.roundTime$.value - this.timePenalty);
       if (this.round == 1) {     
         this.statusMessage$.next('Memorise First Round Blocks')
 
@@ -180,8 +181,7 @@ export class MemoryService {
       }
 
     } else {
-      this.timePenalty += 1;
-      this.memInterval$.next((this.startGrid$.value + this.round - 1) * this.roundTime$.value - this.timePenalty);
+      this.timePenalty += this.penaltyTime$.value;
       
       if (this.memInterval$.value > 0) {
         this.statusMessage$.next('Incorrect - Memorise Blocks Again');
@@ -192,6 +192,7 @@ export class MemoryService {
       }
 
     }
+    this.memInterval$.next((this.startGrid$.value + this.round-1) * this.roundTime$.value - this.timePenalty);
 
     clearInterval(this.interval);
     this.interval = setInterval(() => {
@@ -214,7 +215,6 @@ export class MemoryService {
     this.statusMessage$.next('Build Blocks');
 
     this.memoryGrid$.next(this.memoryWhite);
-    //this.memoryGrid = this.memoryWhite.slice();
 
   }
 
