@@ -9,16 +9,22 @@
     </div>
 
     <div class="columns has-text-centered">
-            <div class="column">
-                <div class="box">
-                    <p class="heading">Status</p>
-                    <p class="title">{{statusMessageValue()}}</p> 
-                </div>    
-            </div>
+        <div class="column is-one-third">
+            <div class="box">
+                <p class="heading">Status</p>
+                <p class="title">{{statusMessageValue()}}</p> 
+            </div>    
+        </div>
         <div class="column">
             <div class="box" *ngIf="round > 0">
                 <div class="heading">Round</div>
                 <div class="title">{{round}}</div>
+            </div>
+        </div>
+        <div class="column">
+            <div class="box" *ngIf="round > 0">
+                <div class="heading">Blocks</div>
+                <div class="title">{{blocks}}</div>
             </div>
         </div>
         <div class="column">

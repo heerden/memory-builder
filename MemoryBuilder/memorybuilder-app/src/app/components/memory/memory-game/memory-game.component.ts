@@ -9,6 +9,7 @@ import { MemoryService } from 'src/app/services/memory.service';
 export class MemoryGameComponent implements OnInit {
 
   round: number;
+  blocks: number;
 
   constructor(private memory: MemoryService) { }
 
@@ -17,19 +18,19 @@ export class MemoryGameComponent implements OnInit {
   }
 
   startGameButton() {
-    this.round = this.memory.startGame();
+    [this.round, this.blocks] = this.memory.startGame();
   }
 
   nextRoundButton() {
-    this.round = this.memory.nextRound();
+    [this.round, this.blocks] = this.memory.nextRound();
   }
 
   startRoundButton() {
-    this.round = this.memory.startRound();
+    [this.round, this.blocks] = this.memory.startRound();
   }
 
   restartButton() {
-    this.round = this.memory.restart();
+    [this.round, this.blocks] = this.memory.restart();
   }
 
 

@@ -21,10 +21,11 @@ export class MemoryService {
   startGrid$ = new BehaviorSubject<number>(3);
   increaseGrid$ = new BehaviorSubject<number>(1);
   colourSelect$ = new BehaviorSubject<number>(6);
-  roundTime$ = new BehaviorSubject<number>(3);
+  roundTime$ = new BehaviorSubject<number>(1);
   penaltyTime$ = new BehaviorSubject<number>(1);
 
   round: number;
+  blocks: number;
 
   interval: any;
   showTime: number;
@@ -41,10 +42,10 @@ export class MemoryService {
       colourPos: colourPos,
       question: question
     }
-    console.log("UPDATING: " + pos);
+    //console.log("UPDATING: " + pos);
     //console.log(this.memoryGrid);
     this.memoryGrid[pos] = gridCell;
-    this.colourArray(this.memoryGrid);
+    //this.colourArray(this.memoryGrid);
     //console.log(this.memoryGrid);
   }
 
@@ -87,6 +88,7 @@ export class MemoryService {
   startGame() {
 
     this.round = 1;
+    this.blocks = this.startGrid$.value;
     this.timePenalty = 0;
     this.isMemorising$.next(true);
 
@@ -101,27 +103,28 @@ export class MemoryService {
     this.isCorrect$.next(true);
     this.startShowTimer();
 
-    return this.round;
+    return [this.round, this.blocks];
   }
 
   restart() {
 
     this.showTime = 0;
     this.round = 0;
+    this.blocks = 0;
     this.isCorrect$.next(true);
     this.statusMessage$.next('Press Start');
     clearInterval(this.interval);
 
-    return this.round;
+    return [this.round, this.blocks];
   }
 
   nextRound() {
-
     if (!this.isMemorising$.value) {
       if (this.equalColours(this.memoryGrid, this.memoryRetain)) {
         this.isCorrect$.next(true);
 
         this.round += 1;
+        this.blocks += this.increaseGrid$.value;
 
         console.log("Round: " + (this.round));
         for (let m = 0; m < this.increaseGrid$.value; m++) {
@@ -140,17 +143,17 @@ export class MemoryService {
       }
     }
 
-    return this.round;
+    return [this.round, this.blocks];
   }
 
   startRound() {
     this.isMemorising$.next(false);
     this.rememberStatus();
 
-    return this.round;
+    return [this.round, this.blocks];
   }
 
-  colourArray (memory: Array<any>) {
+  logColourArray(memory: Array<any>) {
 
     // for cheat colours in the console
     let colouring = new Array<any>();
@@ -168,7 +171,7 @@ export class MemoryService {
 
     console.log("Start next round");
     //this.colourArray(this.memoryGrid);
-    this.colourArray(this.memoryRetain);
+    this.logColourArray(this.memoryRetain);
     this.isMemorising$.next(true);
 
     if (this.isCorrect$.value) {

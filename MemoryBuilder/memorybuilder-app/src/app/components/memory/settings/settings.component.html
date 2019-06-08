@@ -15,7 +15,7 @@
 
     <div>Memorising time added after each round: {{roundTime}}</div><br>
 
-    <p-slider [(ngModel)]="roundTime" [min]=1 [max]=10 [step]=1 [style]="{'width':'15em'}" [animate]=true (onChange)="changeRoundTime($event)"></p-slider><br>
+    <p-slider [(ngModel)]="roundTime" [min]=1 [max]=7 [step]=1 [style]="{'width':'15em'}" [animate]=true (onChange)="changeRoundTime($event)"></p-slider><br>
 
     <div>Memorising penalty time reduced after incorrect answer: {{penaltyTime}}</div><br>
 

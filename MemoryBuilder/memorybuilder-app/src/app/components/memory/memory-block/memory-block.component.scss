@@ -1,13 +1,13 @@
 :host, div {
-    display: -webkit-box;
+    /* display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
+    display: -webkit-flex; */
+    display: block;
 
     height: 100%;
     width: 100%;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid black;
+    //border: 1px solid black;
+    //align-items: center;
+    //justify-content: center;
 }

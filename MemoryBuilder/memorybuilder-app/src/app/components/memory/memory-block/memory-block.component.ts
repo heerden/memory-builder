@@ -53,7 +53,9 @@ export class MemoryBlockComponent implements OnInit {
   }
 
   getStyle() {
-    return { backgroundColor: Colours[this.colourPos]};
+    if (this.question) {
+      return { border: "2px dashed red"};
+    } else return { backgroundColor: Colours[this.colourPos], border: "2px solid black"};
   }
 
 }

@@ -16,7 +16,7 @@ export class SelectGridComponent implements OnInit {
   constructor(private memory: MemoryService) {
 
     this.colourSelect$.subscribe(m => {
-      console.log(m);
+      //console.log(m);
       this.colourSelect = m;
       this.selectGrid = new Array(this.colourSelect).fill(0).map((_, i) => i)
     })

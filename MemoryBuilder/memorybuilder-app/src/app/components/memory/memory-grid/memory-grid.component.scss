@@ -5,7 +5,7 @@
 }
 
 .memory-grid {
-    width: 800px;
+    width: 427px;
     //height: var(--totalHeight);
     //border: 1px solid black;
     display: grid;
@@ -17,7 +17,7 @@
 .grid-item {
     grid-column-start: auto;
     grid-row-start: auto;
-    height: 80px;
+    height: 40px;
     //width: 80px;
     //margin: 5px;
 }
