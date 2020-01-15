@@ -10,6 +10,7 @@ export class MemoryService {
   memoryRetain: Array<any>;
   memoryGrid: Array<any>;
   memoryWhite: Array<any>;
+  memoryWrong: Array<any>;
   memoryGrid$ = new BehaviorSubject<any>(null);
 
   isMemorising$ = new BehaviorSubject<boolean>(true);
@@ -40,7 +41,8 @@ export class MemoryService {
     let gridCell = {
       pos: pos,
       colourPos: colourPos,
-      question: question
+      question: question,
+      wrong: false
     }
     //console.log("UPDATING: " + pos);
     //console.log(this.memoryGrid);
@@ -55,20 +57,22 @@ export class MemoryService {
     let gridCell = {
       pos: p,
       colourPos: Math.floor(Math.random() * this.colourSelect$.value),
-      question: false    
+      question: false,
+      wrong: false
     }; 
     this.memoryRetain.push(gridCell);
 
     let whiteCell = {
       pos: p,
       colourPos: 3,
-      question: true    
+      question: true,
+      wrong: false    
     }; 
     this.memoryWhite.push(whiteCell);
   }
 
-  equalColours (memory, retain) {
-
+  checkBlockColours(memory, retain) {
+    let check = 0;
     //console.log("CHECKING");
     //this.colourArray(memory);
     //this.colourArray(retain);
@@ -78,11 +82,14 @@ export class MemoryService {
       let B = retain[i]["colourPos"];
       //console.log(A + " : " + B);
       if (A != B) {
-        return false; // return on first incorrect colourPos
+        this.memoryWrong[i]["wrong"] = true;
+        check++
+      } else {        
+        this.memoryWrong[i]["wrong"] = false;
       }
     }
 
-    return true
+    return check
   }
 
   startGame() {
@@ -95,10 +102,12 @@ export class MemoryService {
     this.memoryGrid = new Array;
     this.memoryRetain = new Array;
     this.memoryWhite = new Array;
+    this.memoryWrong = new Array;
 
     for (let i = 0; i < this.startGrid$.value; i++) {
-      this.setMemoryBlock();//i
+      this.setMemoryBlock();
     }
+    this.memoryWrong = this.memoryRetain.slice();
 
     this.isCorrect$.next(true);
     this.startShowTimer();
@@ -120,7 +129,9 @@ export class MemoryService {
 
   nextRound() {
     if (!this.isMemorising$.value) {
-      if (this.equalColours(this.memoryGrid, this.memoryRetain)) {
+      
+      this.memoryWrong = this.memoryRetain.slice();
+      if (this.checkBlockColours(this.memoryGrid, this.memoryRetain) == 0) {
         this.isCorrect$.next(true);
 
         this.round += 1;
@@ -166,7 +177,6 @@ export class MemoryService {
 
   startShowTimer() {
 
-    this.memoryGrid$.next(this.memoryRetain);
     this.memoryGrid = this.memoryWhite.slice(); // otherwise memory alloc is linked, also set here to avoid equal comparison before interval complete. hide for quick testing
 
     console.log("Start next round");
@@ -175,6 +185,9 @@ export class MemoryService {
     this.isMemorising$.next(true);
 
     if (this.isCorrect$.value) {
+    
+      this.memoryGrid$.next(this.memoryRetain);
+
       if (this.round == 1) {     
         this.statusMessage$.next('Memorise First Round Blocks')
 
@@ -184,6 +197,9 @@ export class MemoryService {
       }
 
     } else {
+    
+      this.memoryGrid$.next(this.memoryWrong);
+
       this.timePenalty += this.penaltyTime$.value;
       
       if (this.memInterval$.value > 0) {

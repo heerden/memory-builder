@@ -11,6 +11,9 @@ export class MemoryGameComponent implements OnInit {
   round: number;
   blocks: number;
 
+  showInfo = true;
+  showWarning = true;
+
   constructor(private memory: MemoryService) { }
 
   ngOnInit() {
@@ -51,4 +54,11 @@ export class MemoryGameComponent implements OnInit {
     return this.memory.isMemorising$.value;
   }
 
+  closeInfo() {
+    this.showInfo = false
+  }
+
+  closeWarning() {
+    this.showWarning = false
+  }
 }

@@ -1,11 +1,22 @@
 <div class="container">
-    <div class="notification is-info">
-        Remember the sequence of blocks and build then out as it grows. Drag and drop the colour blocks to the question grid.
-        <span class="delete"></span>
+
+    <div>
+        <p-button label="Login"></p-button>
+        <a>&nbsp;</a>
+        <a *ngIf="round > 0">
+            <p-button (click)="restartButton()" label="Restart"></p-button>
+        </a>
     </div>
-    <div class="notification is-warning">
+    
+    <br>
+
+    <div class="notification is-info" *ngIf="showInfo">
+        Remember the sequence of blocks and build then out as it grows. Drag and drop the colour blocks to the question grid.
+        <span class="delete" (click)="closeInfo()"></span>
+    </div>
+    <div class="notification is-warning" *ngIf="showWarning">
         Note: Currently only working on desktop browsers.
-        <span class="delete"></span>
+        <span class="delete" (click)="closeWarning()"></span>
     </div>
 
     <div class="columns has-text-centered">
@@ -56,11 +67,5 @@
 
     <div *ngIf="round > 0">
         <app-memory-grid></app-memory-grid>
-    </div>
-
-    <br>
-
-    <div *ngIf="round > 0">
-        <p-button (click)="restartButton()" label="Restart"></p-button>
     </div>
 </div>

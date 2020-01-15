@@ -15,6 +15,7 @@ export class MemoryBlockComponent implements OnInit {
   pos: number;
   colourPos: number;
   question: boolean;
+  wrong: boolean;
 
   isMemorising$ = this.memory.isMemorising$;
   isMemorising: boolean;
@@ -45,6 +46,7 @@ export class MemoryBlockComponent implements OnInit {
     this.pos = this.memoryBlock["pos"]
     this.colourPos = this.memoryBlock["colourPos"];
     this.question = this.memoryBlock["question"];
+    this.wrong = this.memoryBlock["wrong"];
     //console.log("Init:: Position: " + this.pos + " Colour: " + this.colourPos, " Question: " + this.question);
   }
 
@@ -55,7 +57,11 @@ export class MemoryBlockComponent implements OnInit {
   getStyle() {
     if (this.question) {
       return { border: "2px dashed red"};
-    } else return { backgroundColor: Colours[this.colourPos], border: "2px solid black"};
+    
+    } else if (this.wrong) {
+      return {backgroundColor: Colours[this.colourPos], border: "2px dashed black"}
+    }
+    else return { backgroundColor: Colours[this.colourPos], border: "2px solid black"};
   }
 
 }
