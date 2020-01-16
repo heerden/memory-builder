@@ -76,16 +76,18 @@ export class MemoryService {
     //console.log("CHECKING");
     //this.colourArray(memory);
     //this.colourArray(retain);
+    //console.log(memory);      
 
     for (let i = 0; i < memory.length; i++) {
       let A = memory[i]["colourPos"];
       let B = retain[i]["colourPos"];
-      //console.log(A + " : " + B);
-      if (A != B) {
+
+      // will be wrong if the block's memory is not equal to the answer OR the block is not answered
+      if ((A != B) || memory[i]["question"]) {
         this.memoryWrong[i]["wrong"] = true;
         check++
       } else {        
-        this.memoryWrong[i]["wrong"] = false;
+        this.memoryWrong[i]["wrong"] = false; // slice does not work to completely duplicate memmoryWrong from memoryretain
       }
     }
 
@@ -185,7 +187,7 @@ export class MemoryService {
     this.isMemorising$.next(true);
 
     if (this.isCorrect$.value) {
-    
+      // Correct result, show new blocls
       this.memoryGrid$.next(this.memoryRetain);
 
       if (this.round == 1) {     
@@ -197,7 +199,7 @@ export class MemoryService {
       }
 
     } else {
-    
+      // Incorrect result, highliight incorrect blocks
       this.memoryGrid$.next(this.memoryWrong);
 
       this.timePenalty += this.penaltyTime$.value;
@@ -236,6 +238,4 @@ export class MemoryService {
     this.memoryGrid$.next(this.memoryWhite);
 
   }
-
 }
-

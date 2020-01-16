@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MemoryService } from 'src/app/services/memory.service';
-import { Colours } from 'src/app/interfaces/colours'
+import { Colours, ColourContrasts } from 'src/app/interfaces/colours'
 
 import { SkyhookDndService } from "@angular-skyhook/core";
 
@@ -59,9 +59,16 @@ export class MemoryBlockComponent implements OnInit {
       return { border: "2px dashed red"};
     
     } else if (this.wrong) {
-      return {backgroundColor: Colours[this.colourPos], border: "2px dashed black"}
+
+      return {"backgroundColor": Colours[this.colourPos],
+              "border": "3px dashed " + ColourContrasts[this.colourPos],
+              "box-sizing": "border-box",
+              "-moz-box-sizing": "border-box",
+              "-webkit-box-sizing": "border-box",              
+            }
     }
     else return { backgroundColor: Colours[this.colourPos], border: "2px solid black"};
   }
+
 
 }
