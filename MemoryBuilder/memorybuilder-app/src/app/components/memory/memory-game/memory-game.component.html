@@ -7,7 +7,7 @@
             <p-button (click)="restartButton()" label="Restart"></p-button>
         </a>
     </div>
-    
+
     <br>
 
     <div class="notification is-info" *ngIf="showInfo">
@@ -23,8 +23,8 @@
         <div class="column is-one-third">
             <div class="box">
                 <p class="heading">Status</p>
-                <p class="title">{{statusMessageValue()}}</p> 
-            </div>    
+                <p class="title">{{statusMessageValue()}}</p>
+            </div>
         </div>
         <div class="column">
             <div class="box" *ngIf="round > 0">
@@ -47,17 +47,19 @@
         </div>
     </div>
 
-    <app-select-grid></app-select-grid><br>
-
     <div *ngIf="round == 0">
-        <p-button (click)="startGameButton()" label="Start"></p-button>
+      <p-button (click)="startGameButton()" label="Start"></p-button>
     </div>
     <div *ngIf="round > 0 && !isMemorisingValue()">
-        <p-button (click)="nextRoundButton()" label="Next Round"></p-button>
+      <p-button (click)="nextRoundButton()" label="Next Round"></p-button>
     </div>
     <div *ngIf="round > 0 && isMemorisingValue()">
-        <p-button (click)="startRoundButton()" label="Start Round"></p-button>
+      <p-button (click)="startRoundButton()" label="Start Round"></p-button>
     </div>
+    <br>
+
+    <app-select-grid></app-select-grid>
+    <br>
 
     <div *ngIf="round == 0">
         <br><app-settings></app-settings>
