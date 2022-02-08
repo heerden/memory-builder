@@ -32,7 +32,7 @@ export class MemoryService {
   showTime: number;
   timePenalty: number;
 
-  constructor() { 
+  constructor() {
 
   }
 
@@ -59,15 +59,15 @@ export class MemoryService {
       colourPos: Math.floor(Math.random() * this.colourSelect$.value),
       question: false,
       wrong: false
-    }; 
+    };
     this.memoryRetain.push(gridCell);
 
     let whiteCell = {
       pos: p,
       colourPos: 3,
       question: true,
-      wrong: false    
-    }; 
+      wrong: false
+    };
     this.memoryWhite.push(whiteCell);
   }
 
@@ -76,7 +76,7 @@ export class MemoryService {
     //console.log("CHECKING");
     //this.colourArray(memory);
     //this.colourArray(retain);
-    //console.log(memory);      
+    //console.log(memory);
 
     for (let i = 0; i < memory.length; i++) {
       let A = memory[i]["colourPos"];
@@ -86,7 +86,7 @@ export class MemoryService {
       if ((A != B) || memory[i]["question"]) {
         this.memoryWrong[i]["wrong"] = true;
         check++
-      } else {        
+      } else {
         this.memoryWrong[i]["wrong"] = false; // slice does not work to completely duplicate memmoryWrong from memoryretain
       }
     }
@@ -131,7 +131,7 @@ export class MemoryService {
 
   nextRound() {
     if (!this.isMemorising$.value) {
-      
+
       this.memoryWrong = this.memoryRetain.slice();
       if (this.checkBlockColours(this.memoryGrid, this.memoryRetain) == 0) {
         this.isCorrect$.next(true);
@@ -190,26 +190,26 @@ export class MemoryService {
       // Correct result, show new blocls
       this.memoryGrid$.next(this.memoryRetain);
 
-      if (this.round == 1) {     
-        this.statusMessage$.next('Memorise First Round Blocks')
+      if (this.round == 1) {
+        this.statusMessage$.next('First Round')
 
       } else {
-        this.statusMessage$.next('Correct - Memorise Next Round Blocks')
+        this.statusMessage$.next('Correct')
 
       }
 
     } else {
-      // Incorrect result, highliight incorrect blocks
+      // Incorrect result, highlight incorrect blocks
       this.memoryGrid$.next(this.memoryWrong);
 
       this.timePenalty += this.penaltyTime$.value;
-      
+
       if (this.memInterval$.value > 0) {
-        this.statusMessage$.next('Incorrect - Memorise Blocks Again');
-
-      } else {
-        this.statusMessage$.next('Incorrect - Memorise Blocks Again'); // - Time Penalty
-
+        this.statusMessage$.next('Incorrect');
+      }
+      else
+      {
+        this.statusMessage$.next('Incorrect'); // - Negative = Time Penalty
       }
 
     }
