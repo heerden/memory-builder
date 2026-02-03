@@ -30,7 +30,7 @@ npm start
 
 ## Build
 
-Build the production artifact to `dist/memorybuilder-app/browser`:
+Build the production artifact to `dist/memorybuilder/browser`:
 
 ```bash
 npm run build -- --configuration production

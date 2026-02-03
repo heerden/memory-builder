@@ -1,10 +1,10 @@
 # MemoryBuilder Project Context
 
 ## Project Overview
-**Name:** memorybuilder-app
+**Name:** memorybuilder
 **Version:** 1.2.2
 **Description:** Angular-based application for memory building.
-**Root Directory:** `MemoryBuilder/memorybuilder-app`
+**Root Directory:** `MemoryBuilder/memorybuilder`
 
 ## Technical Stack
 - **Framework:** Angular 8.2.14
