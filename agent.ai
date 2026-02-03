@@ -1,0 +1,78 @@
+# MemoryBuilder Project Context
+
+## Project Overview
+**Name:** memorybuilder-app
+**Version:** 1.2.2
+**Description:** Angular-based application for memory building.
+**Root Directory:** `MemoryBuilder/memorybuilder-app`
+
+## Technical Stack
+- **Framework:** Angular 8.2.14
+- **Language:** TypeScript 3.5.3
+- **Build System:** Angular CLI 8.3.23
+- **Package Manager:** npm (inferred from `package-lock.json`)
+
+## Game Rules
+A sequence of random colour blocks is presented to the user, and shown for a set period of time.
+After which the blocks disappears and the user needs to recreate the exact order.
+The user can continue as long as he wants and make as many corrections as he wants.
+On the interface level, drag-and-drop components are used. 
+At the top, there is a list of available blocks, 
+and at the bottom, there are open slot (white background, with a red dotted border) 
+for the user to place the relevant colour block.    
+When the user clicks Next Round the sequence is evaluated.
+If it is correct the number of block in the sequence is increase and the ammount of time to memorise the sequence.
+If it is incorrect, time is decreased from the amount of time to memorise the sequence, and the user can try again, 
+until the remaining time reaches 0 seconds.
+
+Sequence of game states:
+1. User press [Start] button, to start the game
+2. The button changes to [Start Round], and a new sequence is presented to the user.
+3. The sequence disappears when the button is clicked, and the button become [Next Round].
+4. In this state, the bottom block canvas starts with empty slots where the user can complete the sequence.
+5. When the button is clicked the result is evaluated and we go back to [Start Round] state.
+
+Available settings at the start of the game:
+Number of blocks to start with (default 3)
+Number of blocks to increase after every round (default 1)
+Number of colours to use (default 6)
+Memorising time added after each round (default 1s)
+Memorising penalty time reduced after incorrect answer (default 1s)
+
+## Key Libraries & Dependencies
+- **UI Frameworks:**
+  - `bulma` (^0.7.5): CSS framework
+  - `primeng` (^7.1.3): Angular UI component library
+  - `primeicons` (^1.0.0): Icons
+- **Functionality:**
+  - `@angular-skyhook/core`: Drag and drop implementation (React DnD wrapper)
+  - `rxjs` (^6.5.2): Reactive programming
+  
+## Project Structure
+- `src/app`: Main application logic
+- `src/assets`: Static assets
+- `src/environments`: Configuration files
+- `e2e`: End-to-end tests
+
+## Development Commands
+- **Start:** `npm start` (Runs `ng serve`)
+- **Build:** `npm run build` (Runs `ng build`)
+- **Test:** `npm test` (Runs `ng test`)
+- **Lint:** `npm run lint` (Runs `ng lint`)
+
+Agents MAY NOT perform any git commands
+
+## Next Goals
+Currently, the project can be build and run on node 10.9.0 and angular 8.2.14.
+This has to be upgraded to the latest stable version angular v21.
+Nodejs has already been updated the latest stable version 24.13
+
+## Draggable UI/UX Rules
+1. **Static Source**: The source block in the selection palette must remain static and unchanged (color, border, size) when dragged. It should visually represent a "copy" operation, leaving the original behind.
+2. **Drag Preview**:
+   - The preview element following the cursor must match the original block's dimensions (`matchSize`).
+   - It must be scaled to **90%** of the original size.
+   - It must have an opacity of **80%**.
+3. **Hover Preview**: When dragging over a valid drop zone, the drop zone must temporarily adopt the color of the dragged item to preview the result. This preview must revert immediately when the drag exits the zone.
+4. **No Return Animation**: Dropped items that are not accepted or cancelled must disappear immediately (`opacity: 0`, `transition: none`). They must NOT animate/fly back to the source position.
+5. **Target Stability**: The drop target list must NOT show a CDK placeholder that shifts layout. The target block should only visually respond via the Hover Preview mechanism.

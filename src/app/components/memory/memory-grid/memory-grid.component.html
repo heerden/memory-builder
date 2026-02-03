@@ -1,0 +1,9 @@
+<div class="memory-grid">
+  @if (memoryGrid$|async; as grid) {
+    @for (m of grid; track m) {
+      <div class="grid-item">
+        <app-memory-block [memoryBlock]="m"></app-memory-block>
+      </div>
+    }
+  }
+</div>

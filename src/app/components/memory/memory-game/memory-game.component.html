@@ -1,0 +1,94 @@
+<div class="container" cdkDropListGroup>
+
+  <div>
+    <button class="button is-primary">Login</button>
+    <a>&nbsp;</a>
+    @if (round > 0) {
+      <a>
+        <button class="button is-warning" (click)="restartButton()">Restart</button>
+      </a>
+    }
+  </div>
+
+  <br>
+
+    @if (showInfo) {
+      <div class="notification is-info">
+        Remember the sequence of blocks and build then out as it grows. Drag and drop the colour blocks to the question
+        grid.
+        <span class="delete" (click)="closeInfo()"></span>
+      </div>
+    }
+
+    <div class="columns has-text-centered">
+      <div class="column is-one-third">
+        <div class="box">
+          <p class="heading">Status</p>
+          <p class="title">{{statusMessageValue()}}</p>
+        </div>
+      </div>
+      <div class="column">
+        @if (round > 0) {
+          <div class="box">
+            <div class="heading">Round</div>
+            <div class="title">{{round}}</div>
+          </div>
+        }
+      </div>
+      <div class="column">
+        @if (round > 0) {
+          <div class="box">
+            <div class="heading">Blocks</div>
+            <div class="title">{{blocks}}</div>
+          </div>
+        }
+      </div>
+      <div class="column">
+        @if (round > 0) {
+          <div class="box">
+            @if (memIntervalValue() > 0) {
+              <p class="heading">Memorise Time (s)</p>
+            }
+            @if (memIntervalValue() <= 0) {
+              <p class="heading">Penalty Time (s)</p>
+            }
+            <p class="title">{{memIntervalValue()}}</p>
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (round == 0) {
+      <div>
+        <button class="button is-primary is-large" (click)="startGameButton()">Start</button>
+      </div>
+    }
+    @if (round > 0 && !isMemorisingValue()) {
+      <div>
+        <button class="button is-link is-large" (click)="nextRoundButton()">Next Round</button>
+      </div>
+    }
+    @if (round > 0 && isMemorisingValue()) {
+      <div>
+        <button class="button is-success is-large" (click)="startRoundButton()">Start Round</button>
+      </div>
+    }
+    <br>
+
+      <app-select-grid></app-select-grid>
+      <br>
+
+        @if (round == 0) {
+          <div>
+            <br><app-settings></app-settings>
+          </div>
+        }
+
+        <br>
+
+          @if (round > 0) {
+            <div>
+              <app-memory-grid></app-memory-grid>
+            </div>
+          }
+        </div>

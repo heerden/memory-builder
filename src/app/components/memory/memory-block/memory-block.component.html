@@ -1,0 +1,4 @@
+<div [ngStyle]="getStyle()" cdkDropList (cdkDropListDropped)="drop($event)" (cdkDropListEntered)="enter($event)"
+    (cdkDropListExited)="exit($event)">
+    <ng-content></ng-content>
+</div>

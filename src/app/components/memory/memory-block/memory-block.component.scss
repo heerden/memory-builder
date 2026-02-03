@@ -1,0 +1,17 @@
+:host,
+div {
+    /* display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex; */
+    display: block;
+
+    height: 100%;
+    width: 100%;
+
+    // Hide the placeholder in the target list to prevent layout shifts or "white box" effect.
+    // We only want the drop event, not the visual insertion.
+    ::ng-deep .cdk-drag-placeholder {
+        display: none;
+    }
+}

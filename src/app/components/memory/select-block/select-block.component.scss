@@ -1,0 +1,92 @@
+// Host must be relative to contain absolute children
+:host {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+// 1. Static layer: Always at the bottom (z-index 0)
+// This ensures that when the drag placeholder moves away, the color remains here.
+.static-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    box-sizing: border-box;
+    border: 1px solid black;
+}
+
+// 2. Drag layer: Sits on top (z-index 1)
+.drag-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.drag-item {
+    width: 100%;
+    height: 100%;
+}
+
+// The visual component inside the drag item
+.drag-source-visual {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border: 1px solid black;
+    // It can be identical to static layer. 
+    // When dragged, it disappears (replaced by placeholder).
+}
+
+// Placeholder must be transparent so the Static Layer shows through!
+.select-block-placeholder-transparent {
+    opacity: 0 !important;
+    width: 100%;
+    height: 100%;
+}
+
+// The preview (what follows the cursor)
+.select-block-preview {
+    // We need to match the size of the original block.
+    // Since we know the grid size in select-grid is likely responsive,
+    // this is tricky without matchSize, but let's try to set it to 100% of the host
+    // or provide a reasonable default. 
+    // Actually, CDK copies dimension if matchSize is true (by default it's not).
+    width: 60px; // fallback
+    height: 60px; // fallback 
+    // Ideally we want 100% of the drag item but it's detached.
+    // The easiest fix is to just let it have dimensions.
+
+    // IMPORTANT: In flex/grid scenarios, the detached preview needs explicit size.
+    // We can also try min-width/height.
+    min-width: 50px;
+    min-height: 50px;
+    width: 100%; // Try to take width of whatever container it's in (CDK puts it in body usually)
+    height: 100%;
+
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
+        0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    z-index: 1000 !important;
+    border-radius: 4px;
+    box-sizing: border-box;
+    border: 1px solid black; // Keep border on the preview too
+
+    // User Polish: 90% size and 80% opacity
+    transform: scale(0.9);
+    opacity: 0.8;
+}
+
+/* Animate the drop */
+/* Animate the drop - DISABLE return animation for SelectBlock */
+/* We want it to disappear immediately because we have a static layer underneath. */
+.cdk-drag-animating {
+    transition: none !important;
+    opacity: 0 !important;
+}

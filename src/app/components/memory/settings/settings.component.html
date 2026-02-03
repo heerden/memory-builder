@@ -1,0 +1,28 @@
+<div class="box">
+    <p class="heading">Settings</p>
+
+    <div>Number of blocks to start with: {{startGrid}}</div><br>
+
+    <app-slider [(ngModel)]="startGrid" [min]=3 [max]=110 [step]=1 [style]="{'width':'15em'}"
+        (onChange)="changeStartGrid($event)"></app-slider><br>
+
+    <div>Number of blocks to increase after every round: {{increaseGrid}}</div><br>
+
+    <app-slider [(ngModel)]="increaseGrid" [min]=1 [max]=5 [step]=1 [style]="{'width':'15em'}"
+        (onChange)="changeIncreaseGrid($event)"></app-slider><br>
+
+    <div>Number of colours to use: {{colourSelect}}</div><br>
+
+    <app-slider [(ngModel)]="colourSelect" [min]=3 [max]=8 [step]=1 [style]="{'width':'15em'}"
+        (onChange)="changeColourSelect($event)"></app-slider><br>
+
+    <div>Memorising time added after each round: {{roundTime}}</div><br>
+
+    <app-slider [(ngModel)]="roundTime" [min]=1 [max]=7 [step]=1 [style]="{'width':'15em'}"
+        (onChange)="changeRoundTime($event)"></app-slider><br>
+
+    <div>Memorising penalty time reduced after incorrect answer: {{penaltyTime}}</div><br>
+
+    <app-slider [(ngModel)]="penaltyTime" [min]=1 [max]=3 [step]=1 [style]="{'width':'15em'}"
+        (onChange)="changePenaltyTime($event)"></app-slider><br>
+</div>

@@ -1,0 +1,22 @@
+<!-- 1. Static Static layer: Always visible, never moves, never changes. -->
+<div [ngStyle]="getStyle()" class="static-layer"></div>
+
+<!-- 2. Drag layer: Handles the interaction. -->
+<div cdkDropList [cdkDropListSortingDisabled]="true" class="drag-layer">
+  <div cdkDrag [cdkDragData]="{colourPos: colourPos}" class="drag-item">
+
+    <!-- Preview: What follows the cursor -->
+    <ng-template cdkDragPreview [matchSize]="true">
+      <div [ngStyle]="getStyle()" class="select-block-preview"></div>
+    </ng-template>
+
+    <!-- Placeholder: Transparent so distinct static layer shows through -->
+    <div *cdkDragPlaceholder class="select-block-placeholder-transparent"></div>
+
+    <!-- The Visible Drag Source (on top of static layer initially) -->
+    <!-- We can just make this transparent or identical. If identical, it sits on top. -->
+    <div [ngStyle]="getStyle()" class="drag-source-visual">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>
