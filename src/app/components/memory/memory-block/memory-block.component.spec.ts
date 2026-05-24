@@ -1,4 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MemoryBlockComponent } from './memory-block.component';
 
@@ -6,9 +7,10 @@ describe('MemoryBlockComponent', () => {
   let component: MemoryBlockComponent;
   let fixture: ComponentFixture<MemoryBlockComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MemoryBlockComponent ]
+      declarations: [ MemoryBlockComponent ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   }));

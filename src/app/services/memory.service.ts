@@ -19,11 +19,11 @@ export class MemoryService {
   memInterval$ = new BehaviorSubject<number>(0);
 
   //settings
-  startGrid$ = new BehaviorSubject<number>(3);
-  increaseGrid$ = new BehaviorSubject<number>(1);
-  colourSelect$ = new BehaviorSubject<number>(6);
-  roundTime$ = new BehaviorSubject<number>(1);
-  penaltyTime$ = new BehaviorSubject<number>(1);
+  startGrid$ = new BehaviorSubject<number>(this.getSetting('startGrid', 3));
+  increaseGrid$ = new BehaviorSubject<number>(this.getSetting('increaseGrid', 1));
+  colourSelect$ = new BehaviorSubject<number>(this.getSetting('colourSelect', 6));
+  roundTime$ = new BehaviorSubject<number>(this.getSetting('roundTime', 1));
+  penaltyTime$ = new BehaviorSubject<number>(this.getSetting('penaltyTime', 1));
 
   round: number;
   blocks: number;
@@ -33,7 +33,133 @@ export class MemoryService {
   timePenalty: number;
 
   constructor() {
+    this.round = 0;
+    this.blocks = 0;
+    this.showTime = 0;
+    this.timePenalty = 0;
 
+    // Subscribe to settings change to save them
+    this.startGrid$.subscribe(val => this.saveSetting('startGrid', val));
+    this.increaseGrid$.subscribe(val => this.saveSetting('increaseGrid', val));
+    this.colourSelect$.subscribe(val => this.saveSetting('colourSelect', val));
+    this.roundTime$.subscribe(val => this.saveSetting('roundTime', val));
+    this.penaltyTime$.subscribe(val => this.saveSetting('penaltyTime', val));
+
+    // Load saved progress
+    const loaded = this.loadProgress();
+    if (!loaded) {
+      this.statusMessage$.next('Press Start');
+    }
+  }
+
+  private getSetting(key: string, defaultValue: number): number {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return defaultValue;
+    }
+    try {
+      const val = localStorage.getItem(`memory_setting_${key}`);
+      return val !== null ? Number(val) : defaultValue;
+    } catch (e) {
+      console.error('Error reading setting from localStorage', e);
+      return defaultValue;
+    }
+  }
+
+  private saveSetting(key: string, value: number) {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return;
+    }
+    try {
+      localStorage.setItem(`memory_setting_${key}`, String(value));
+    } catch (e) {
+      console.error('Error saving setting to localStorage', e);
+    }
+  }
+
+  private saveProgress() {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return;
+    }
+    try {
+      const progress = {
+        round: this.round,
+        blocks: this.blocks,
+        timePenalty: this.timePenalty,
+        memoryGrid: this.memoryGrid,
+        memoryRetain: this.memoryRetain,
+        memoryWhite: this.memoryWhite,
+        memoryWrong: this.memoryWrong,
+        isMemorising: this.isMemorising$.value,
+        isCorrect: this.isCorrect$.value,
+        statusMessage: this.statusMessage$.value,
+        memInterval: this.memInterval$.value,
+        showTime: this.showTime
+      };
+      localStorage.setItem('memory_game_progress', JSON.stringify(progress));
+    } catch (e) {
+      console.error('Error saving progress to localStorage', e);
+    }
+  }
+
+  private loadProgress(): boolean {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return false;
+    }
+    try {
+      const saved = localStorage.getItem('memory_game_progress');
+      if (!saved) {
+        return false;
+      }
+      const progress = JSON.parse(saved);
+      if (progress && progress.round !== undefined) {
+        this.round = progress.round;
+        this.blocks = progress.blocks;
+        this.timePenalty = progress.timePenalty;
+        this.memoryGrid = progress.memoryGrid;
+        this.memoryRetain = progress.memoryRetain;
+        this.memoryWhite = progress.memoryWhite;
+        this.memoryWrong = progress.memoryWrong;
+        this.showTime = progress.showTime || 0;
+
+        this.isMemorising$.next(progress.isMemorising);
+        this.isCorrect$.next(progress.isCorrect);
+        this.statusMessage$.next(progress.statusMessage);
+        this.memInterval$.next(progress.memInterval);
+
+        if (progress.round > 0) {
+          if (progress.isMemorising) {
+            if (progress.isCorrect) {
+              this.memoryGrid$.next(this.memoryRetain);
+            } else {
+              this.memoryGrid$.next(this.memoryWrong);
+            }
+            this.resumeTimer();
+          } else {
+            this.memoryGrid$.next(this.memoryGrid || this.memoryWhite);
+          }
+        } else {
+          this.statusMessage$.next('Press Start');
+        }
+        return true;
+      }
+    } catch (e) {
+      console.error('Error loading progress from localStorage', e);
+    }
+    return false;
+  }
+
+  private resumeTimer() {
+    clearInterval(this.interval);
+    this.interval = setInterval(() => {
+      console.log(this.showTime);
+      this.showTime += 1;
+      this.saveProgress();
+
+      if ((this.showTime >= this.memInterval$.value) || !this.isMemorising$.value) {
+        this.rememberStatus();
+        clearInterval(this.interval);
+      }
+    }, 1000);
   }
 
   updateMemoryGrid(pos: number, colourPos: number, question: boolean) {
@@ -49,6 +175,7 @@ export class MemoryService {
     this.memoryGrid[pos] = gridCell;
     //this.colourArray(this.memoryGrid);
     //console.log(this.memoryGrid);
+    this.saveProgress();
   }
 
   setMemoryBlock() {
@@ -114,6 +241,7 @@ export class MemoryService {
     this.isCorrect$.next(true);
     this.startShowTimer();
 
+    this.saveProgress();
     return [this.round, this.blocks];
   }
 
@@ -126,6 +254,7 @@ export class MemoryService {
     this.statusMessage$.next('Press Start');
     clearInterval(this.interval);
 
+    this.saveProgress();
     return [this.round, this.blocks];
   }
 
@@ -156,6 +285,7 @@ export class MemoryService {
       }
     }
 
+    this.saveProgress();
     return [this.round, this.blocks];
   }
 
@@ -163,6 +293,7 @@ export class MemoryService {
     this.isMemorising$.next(false);
     this.rememberStatus();
 
+    this.saveProgress();
     return [this.round, this.blocks];
   }
 
@@ -219,6 +350,7 @@ export class MemoryService {
     this.interval = setInterval(() => {
       console.log(this.showTime);
       this.showTime += 1;
+      this.saveProgress();
 
       if ((this.showTime >= this.memInterval$.value) || !this.isMemorising$.value) {
 
@@ -226,6 +358,8 @@ export class MemoryService {
         clearInterval(this.interval);
       }
     }, 1000);
+
+    this.saveProgress();
   }
 
   rememberStatus() {
@@ -236,6 +370,6 @@ export class MemoryService {
     this.statusMessage$.next('Build Blocks');
 
     this.memoryGrid$.next(this.memoryWhite);
-
+    this.saveProgress();
   }
 }

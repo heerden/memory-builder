@@ -31,10 +31,12 @@ export class MemoryBlockComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.pos = this.memoryBlock["pos"]
-    this.colourPos = this.memoryBlock["colourPos"];
-    this.question = this.memoryBlock["question"];
-    this.wrong = this.memoryBlock["wrong"];
+    if (this.memoryBlock) {
+      this.pos = this.memoryBlock["pos"];
+      this.colourPos = this.memoryBlock["colourPos"];
+      this.question = this.memoryBlock["question"];
+      this.wrong = this.memoryBlock["wrong"];
+    }
   }
 
   drop(event: CdkDragDrop<any>) {

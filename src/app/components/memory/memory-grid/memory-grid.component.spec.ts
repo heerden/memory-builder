@@ -1,4 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MemoryGridComponent } from './memory-grid.component';
 
@@ -6,9 +7,10 @@ describe('MemoryGridComponent', () => {
   let component: MemoryGridComponent;
   let fixture: ComponentFixture<MemoryGridComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MemoryGridComponent ]
+      declarations: [ MemoryGridComponent ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   }));

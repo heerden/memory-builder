@@ -18,7 +18,8 @@ export class MemoryGameComponent implements OnInit {
   constructor(private memory: MemoryService) { }
 
   ngOnInit() {
-    this.restartButton();
+    this.round = this.memory.round;
+    this.blocks = this.memory.blocks;
   }
 
   startGameButton() {
