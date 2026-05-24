@@ -9,8 +9,7 @@ A memory training game built with Angular.
 
 ## Prerequisites
 
-- **Node.js**: v24.13
-- **NPM**: v11.6.2
+- **Node.js**: v24.16.0
 
 ## Installation
 
