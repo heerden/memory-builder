@@ -20,6 +20,13 @@ export class MemoryGameComponent implements OnInit {
   ngOnInit() {
     this.round = this.memory.round;
     this.blocks = this.memory.blocks;
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      try {
+        this.showInfo = sessionStorage.getItem('memory_builder_hide_info') !== 'true';
+      } catch (e) {
+        console.error('Error reading info visibility state from sessionStorage', e);
+      }
+    }
   }
 
   startGameButton() {
@@ -57,7 +64,14 @@ export class MemoryGameComponent implements OnInit {
   }
 
   closeInfo() {
-    this.showInfo = false
+    this.showInfo = false;
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      try {
+        sessionStorage.setItem('memory_builder_hide_info', 'true');
+      } catch (e) {
+        console.error('Error saving info visibility state to sessionStorage', e);
+      }
+    }
   }
 
   closeWarning() {

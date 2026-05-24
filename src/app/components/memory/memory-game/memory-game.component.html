@@ -1,13 +1,12 @@
 <div class="container" cdkDropListGroup>
 
-  <div>
-    <button class="button is-primary">Login</button>
-    <a>&nbsp;</a>
-    @if (round > 0) {
-      <a>
-        <button class="button is-warning" (click)="restartButton()">Restart</button>
-      </a>
-    }
+  <div class="level mb-4">
+    <div class="level-left"></div>
+    <div class="level-right">
+      @if (round > 0) {
+        <button class="button is-warning is-light" (click)="restartButton()">Restart</button>
+      }
+    </div>
   </div>
 
   <br>
