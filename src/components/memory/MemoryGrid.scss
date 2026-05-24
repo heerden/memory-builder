@@ -1,0 +1,14 @@
+.memory-grid {
+    width: max-content;
+    display: grid;
+    grid-template-columns: repeat(10, 40px);
+    grid-gap: 3px;
+}
+
+.grid-item {
+    grid-column-start: auto;
+    grid-row-start: auto;
+    height: 40px;
+    width: 40px;
+    box-sizing: border-box;
+}

@@ -1,0 +1,54 @@
+/* Basic styling for the slider to look decent */
+input[type=range].slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    margin: 10px 0;
+    background: transparent;
+}
+
+input[type=range].slider:focus {
+    outline: none;
+}
+
+input[type=range].slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 8px;
+    cursor: pointer;
+    background: #dbdbdb;
+    /* Bulma grey-lighter */
+    border-radius: 4px;
+}
+
+input[type=range].slider::-webkit-slider-thumb {
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background: #00d1b2;
+    /* Bulma primary color */
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -8px;
+    /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+}
+
+input[type=range].slider:focus::-webkit-slider-runnable-track {
+    background: #b5b5b5;
+}
+
+input[type=range].slider::-moz-range-track {
+    width: 100%;
+    height: 8px;
+    cursor: pointer;
+    background: #dbdbdb;
+    border-radius: 4px;
+}
+
+input[type=range].slider::-moz-range-thumb {
+    height: 24px;
+    width: 24px;
+    border: none;
+    border-radius: 50%;
+    background: #00d1b2;
+    cursor: pointer;
+}

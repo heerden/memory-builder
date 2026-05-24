@@ -1,0 +1,12 @@
+.select-grid {
+    width: max-content;
+    height: 40px;
+    display: grid;
+    grid-gap: 3px;
+}
+
+.square-container {
+    height: 40px;
+    width: 40px;
+    box-sizing: border-box;
+}

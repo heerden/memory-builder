@@ -1,44 +1,70 @@
-# Memory Builder
+# Memory Builder 2.0 🧠
 
-A memory training game built with Angular.
+A beautiful, responsive memory training game built with **React**, **TypeScript**, **Vite**, and **Capacitor** for seamless deployment on Web, Android, and iOS.
 
-## Technology Stack
-- **Framework**: Angular 21
-- **Styling**: Bulma (with custom components)
-- **State Management**: RxJS
+---
 
-## Prerequisites
+## 🚀 Features
+* **Modern Refactored Core**: Completely migrated from Angular to an idiomatic, lightweight React 19 + TypeScript 6 context architecture.
+* **Pixel-Perfect Aesthetics**: Styled with the Bulma CSS framework, offering vibrant layouts and premium responsive designs.
+* **Offline Cross-Platform Support**: Powered by Capacitor v6, supporting native compilation on Android and iOS devices.
+* **Custom Stable Drag & Drop**: Native HTML5 Drag and Drop events featuring custom hover state colors and zero visual layout shifts.
+* **Progress Persistence**: Automatically loads and saves your active score progress and game settings configurations to `localStorage`.
 
-- **Node.js**: v24.16.0
+---
 
-## Installation
+## 🛠️ Technology Stack
+* **Core Framework**: React 19 & React DOM 19
+* **Language & Typings**: TypeScript 6
+* **Build System & Dev Server**: Vite 8
+* **Styling Framework**: Bulma CSS 1.0
+* **Mobile Runtime Wrapper**: Capacitor 6 (Android & iOS)
 
-1. Clone the repository
-2. Install dependencies:
-   ```shell
+---
+
+## 💻 Prerequisites
+* **Node.js**: `node >= v24.16.0`
+* **Package Manager**: `npm`
+
+---
+
+## 📦 Installation & Setup
+
+1. **Install Dependencies**:
+   ```bash
    npm install
    ```
 
-## Development Server
+2. **Run Local Development Server**:
+   Launches the ultra-fast Vite dev server locally at `http://localhost:5173/`:
+   ```bash
+   npm run dev
+   ```
 
-Run at `http://localhost:4200/`:
+3. **Production Web Compilation**:
+   Generates production-ready, minified static HTML, CSS, and JS bundles to the `dist/` directory:
+   ```bash
+   npm run build
+   ```
 
-```shell
-npm start
-```
+---
 
-## Build
+## 📱 Mobile Platforms (Capacitor Workflow)
 
-Build the production artifact to `dist/memorybuilder/browser`:
+Before running Capacitor commands, make sure you have successfully compiled the production assets using `npm run build`.
 
-```bash
-npm run build -- --configuration production
-```
+1. **Synchronize Web Assets to Native Platforms**:
+   Copies web assets to Android/iOS shells and updates native plugins/dependencies:
+   ```bash
+   npx cap sync
+   ```
 
-## Running Tests
+2. **Open iOS Project in Xcode**:
+   ```bash
+   npx cap open ios
+   ```
 
-Execute the unit tests:
-
-```shell
-npm test
-```
+3. **Open Android Project in Android Studio**:
+   ```bash
+   npx cap open android
+   ```
