@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MemoryService } from 'src/app/services/memory.service';
 
 @Component({
@@ -20,11 +20,17 @@ export class MemoryGameComponent implements OnInit {
   ngOnInit() {
     this.round = this.memory.round;
     this.blocks = this.memory.blocks;
-    if (typeof window !== 'undefined' && window.sessionStorage) {
+    if (typeof window !== 'undefined' && window.localStorage) {
       try {
-        this.showInfo = sessionStorage.getItem('memory_builder_hide_info') !== 'true';
+        const contentStr = localStorage.getItem('memory_builder_content');
+        if (contentStr) {
+          const content = JSON.parse(contentStr);
+          this.showInfo = content.hide_info !== true;
+        } else {
+          this.showInfo = true;
+        }
       } catch (e) {
-        console.error('Error reading info visibility state from sessionStorage', e);
+        console.error('Error reading info visibility state from localStorage', e);
       }
     }
   }
@@ -65,11 +71,14 @@ export class MemoryGameComponent implements OnInit {
 
   closeInfo() {
     this.showInfo = false;
-    if (typeof window !== 'undefined' && window.sessionStorage) {
+    if (typeof window !== 'undefined' && window.localStorage) {
       try {
-        sessionStorage.setItem('memory_builder_hide_info', 'true');
+        const contentStr = localStorage.getItem('memory_builder_content');
+        const content = contentStr ? JSON.parse(contentStr) : {};
+        content.hide_info = true;
+        localStorage.setItem('memory_builder_content', JSON.stringify(content));
       } catch (e) {
-        console.error('Error saving info visibility state to sessionStorage', e);
+        console.error('Error saving info visibility state to localStorage', e);
       }
     }
   }

@@ -284,4 +284,231 @@ describe('MemoryGameContext State Machine', () => {
     expect(result.current.statusMessage).toBe('Press Start');
     expect(result.current.memoryGrid).toBeNull();
   });
+
+  it('should throw an error if useMemoryGame is used outside MemoryGameProvider', () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    
+    expect(() => renderHook(() => useMemoryGame())).toThrowError(
+      'useMemoryGame must be used within a MemoryGameProvider'
+    );
+    
+    consoleError.mockRestore();
+  });
+
+  it('should load saved game progress from localStorage on mount and resume timer if memorising', async () => {
+    vi.useFakeTimers();
+    
+    const mockProgress = {
+      round: 3,
+      blocks: 5,
+      timePenalty: 2,
+      memoryGrid: [
+        { pos: 0, colourPos: 1, question: false, wrong: false }
+      ],
+      memoryRetain: [
+        { pos: 0, colourPos: 1, question: false, wrong: false }
+      ],
+      memoryWhite: [
+        { pos: 0, colourPos: 3, question: true, wrong: false }
+      ],
+      memoryWrong: [
+        { pos: 0, colourPos: 1, question: false, wrong: true }
+      ],
+      isMemorising: true,
+      isCorrect: true,
+      statusMessage: 'Correct',
+      memInterval: 5,
+      showTime: 2
+    };
+
+    localStorage.setItem('memory_game_progress', JSON.stringify(mockProgress));
+
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    expect(result.current.round).toBe(3);
+    expect(result.current.blocks).toBe(5);
+    expect(result.current.timePenalty).toBe(2);
+    expect(result.current.isMemorising).toBe(true);
+    expect(result.current.statusMessage).toBe('Correct');
+    expect(result.current.showTime).toBe(2);
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    await act(async () => {});
+
+    expect(result.current.showTime).toBe(3);
+  });
+
+  it('should load progress when isMemorising is false', () => {
+    const mockProgress = {
+      round: 2,
+      blocks: 4,
+      timePenalty: 1,
+      memoryGrid: [{ pos: 0, colourPos: 3, question: true, wrong: false }],
+      memoryRetain: [{ pos: 0, colourPos: 1, question: false, wrong: false }],
+      memoryWhite: [{ pos: 0, colourPos: 3, question: true, wrong: false }],
+      memoryWrong: [{ pos: 0, colourPos: 1, question: false, wrong: true }],
+      isMemorising: false,
+      isCorrect: true,
+      statusMessage: 'Build Blocks',
+      memInterval: 4,
+      showTime: 0
+    };
+
+    localStorage.setItem('memory_game_progress', JSON.stringify(mockProgress));
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    expect(result.current.round).toBe(2);
+    expect(result.current.isMemorising).toBe(false);
+    expect(result.current.memoryGrid?.[0].question).toBe(true);
+  });
+
+  it('should set status to Press Start when round is 0', () => {
+    const mockProgress = {
+      round: 0,
+      statusMessage: 'Build Blocks'
+    };
+
+    localStorage.setItem('memory_game_progress', JSON.stringify(mockProgress));
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    expect(result.current.round).toBe(0);
+    expect(result.current.statusMessage).toBe('Press Start');
+  });
+
+  it('should load memoryWrong grid when isCorrect is false during memorisation', () => {
+    const mockProgress = {
+      round: 1,
+      blocks: 3,
+      timePenalty: 1,
+      memoryRetain: [{ pos: 0, colourPos: 1, question: false, wrong: false }],
+      memoryWrong: [{ pos: 0, colourPos: 1, question: false, wrong: true }],
+      isMemorising: true,
+      isCorrect: false,
+      statusMessage: 'Incorrect',
+      memInterval: 3,
+      showTime: 0
+    };
+
+    localStorage.setItem('memory_game_progress', JSON.stringify(mockProgress));
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    expect(result.current.isCorrect).toBe(false);
+    expect(result.current.memoryGrid?.[0].wrong).toBe(true);
+  });
+
+  it('should handle corrupted JSON string in memory_game_progress gracefully', () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    localStorage.setItem('memory_game_progress', 'invalid-json-string{');
+
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    expect(result.current.round).toBe(0);
+    expect(consoleError).toHaveBeenCalled();
+    consoleError.mockRestore();
+  });
+
+  it('should handle saveProgress localStorage exception gracefully', () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('Quota exceeded');
+    });
+
+    act(() => {
+      result.current.startGame();
+    });
+
+    expect(result.current.round).toBe(1);
+    expect(consoleError).toHaveBeenCalled();
+    consoleError.mockRestore();
+  });
+
+  it('should ignore nextRound call if isMemorising is true', async () => {
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    act(() => {
+      result.current.startGame();
+    });
+    await act(async () => {});
+
+    expect(result.current.isMemorising).toBe(true);
+    expect(result.current.round).toBe(1);
+
+    act(() => {
+      result.current.nextRound();
+    });
+    await act(async () => {});
+
+    // Round should still be 1 (ignored nextRound because we are memorising)
+    expect(result.current.round).toBe(1);
+  });
+
+  it('should do nothing inside updateMemoryGrid if memoryGrid is null', () => {
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    expect(result.current.memoryGrid).toBeNull();
+
+    act(() => {
+      result.current.updateMemoryGrid(0, 1, false);
+    });
+
+    expect(result.current.memoryGrid).toBeNull();
+  });
+
+  it('should ignore updateMemoryGrid call if cell index is out of bounds', async () => {
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    act(() => {
+      result.current.startGame();
+    });
+    await act(async () => {});
+
+    expect(result.current.memoryGrid).not.toBeNull();
+    const originalGrid = result.current.memoryGrid;
+
+    act(() => {
+      result.current.updateMemoryGrid(999, 1, false);
+    });
+    await act(async () => {});
+
+    // Grid remains same
+    expect(result.current.memoryGrid).toEqual(originalGrid);
+  });
+
+  it('should handle localStorage reading errors gracefully', () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('Localstorage is blocked');
+    });
+
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+    
+    expect(result.current.startGrid).toBe(3);
+    expect(consoleError).toHaveBeenCalled();
+
+    consoleError.mockRestore();
+  });
+
+  it('should handle localStorage writing errors gracefully', () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('Localstorage is full');
+    });
+
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+    
+    act(() => {
+      result.current.setStartGrid(6);
+    });
+
+    expect(result.current.startGrid).toBe(6);
+    expect(consoleError).toHaveBeenCalled();
+
+    consoleError.mockRestore();
+  });
 });

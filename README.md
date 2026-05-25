@@ -99,10 +99,10 @@ Executing a full V8 coverage report (`npm run test:coverage`) compiles the follo
 
 | Metric Type | Coverage Score | Covered Logic Areas |
 | :--- | :--- | :--- |
-| **Statements** | 🟢 **87.25%** | Core settings wrappers, round increments, grid generators, action callbacks |
-| **Branches** | 🟡 **51.80%** | State-driven round paths, drop operations, and evaluation branches |
+| **Statements** | 🟢 **98.51%** | Core settings wrappers, round increments, grid generators, action callbacks |
+| **Branches** | 🟢 **86.23%** | State-driven round paths, drop operations, and evaluation branches |
 | **Functions** | 🟢 **100.00%** | Full constructor logic, reducer-like context boundaries, hook exporters |
-| **Lines** | 🟢 **88.15%** | Complete state-updating logic pipelines |
+| **Lines** | 🟢 **100.00%** | Complete state-updating logic pipelines |
 
 > [!NOTE]  
 > The remaining branch gaps reside inside `localStorage` safety boundaries (catch-blocks handling storage-full quotas or private browser mode blockages) and assertions detecting provider boundary calls outside React nodes.
@@ -110,11 +110,7 @@ Executing a full V8 coverage report (`npm run test:coverage`) compiles the follo
 ## 🔍 Debugging
 
 ### Checking the Console
-Open your browser's developer tools (usually by pressing **F12**) and navigate to the **Console** tab.
-* **[i] INFO**: General information about game state.
-* **[✅] CORRECT**: Successful round completions.
-* **[❌] WRONG**: Errors or incorrect choices.
-* **[⚠] WARN**: Important messages or warnings.
+Open your browser's developer tools to view information about the game's progress and state. 
 
 ### View LocalStorage
 You can also check the game's `localStorage` to verify settings and score persistence:

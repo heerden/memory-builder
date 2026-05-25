@@ -20,25 +20,31 @@ export const MemoryGame: React.FC = () => {
   const [showInfo, setShowInfo] = useState(true);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.sessionStorage) {
+    if (typeof window !== 'undefined' && window.localStorage) {
       try {
-        const val = sessionStorage.getItem('memory_builder_hide_info');
-        if (val === 'true') {
-          setShowInfo(false);
+        const contentStr = localStorage.getItem('memory_builder_content');
+        if (contentStr) {
+          const content = JSON.parse(contentStr);
+          if (content.hide_info === true) {
+            setShowInfo(false);
+          }
         }
       } catch (e) {
-        console.error('Error reading info visibility state from sessionStorage', e);
+        console.error('Error reading info visibility state from localStorage', e);
       }
     }
   }, []);
 
   const closeInfo = () => {
     setShowInfo(false);
-    if (typeof window !== 'undefined' && window.sessionStorage) {
+    if (typeof window !== 'undefined' && window.localStorage) {
       try {
-        sessionStorage.setItem('memory_builder_hide_info', 'true');
+        const contentStr = localStorage.getItem('memory_builder_content');
+        const content = contentStr ? JSON.parse(contentStr) : {};
+        content.hide_info = true;
+        localStorage.setItem('memory_builder_content', JSON.stringify(content));
       } catch (e) {
-        console.error('Error saving info visibility state to sessionStorage', e);
+        console.error('Error saving info visibility state to localStorage', e);
       }
     }
   };
@@ -60,7 +66,7 @@ export const MemoryGame: React.FC = () => {
 
       {showInfo && (
         <div className="notification is-info" style={{ position: 'relative' }}>
-          Remember the sequence of blocks and build them out as it grows. Drag and drop the colour blocks to the question grid.
+          Remember the sequence of colored blocks and rebuild it once they get a red outline. Drag and drop colors from the palette onto the outline grid.
           <button className="delete" onClick={closeInfo} aria-label="close"></button>
         </div>
       )}
@@ -72,7 +78,7 @@ export const MemoryGame: React.FC = () => {
             <p className="title">{statusMessage}</p>
           </div>
         </div>
-        
+
         {round > 0 && (
           <>
             <div className="column">
@@ -81,14 +87,14 @@ export const MemoryGame: React.FC = () => {
                 <div className="title">{round}</div>
               </div>
             </div>
-            
+
             <div className="column">
               <div className="box">
                 <div className="heading">Blocks</div>
                 <div className="title">{blocks}</div>
               </div>
             </div>
-            
+
             <div className="column">
               <div className="box">
                 <p className="heading">
