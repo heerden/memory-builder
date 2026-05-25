@@ -1,0 +1,287 @@
+import React from 'react';
+import { renderHook, act } from '@testing-library/react';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { MemoryGameProvider, useMemoryGame } from './MemoryGameContext';
+
+// Helper wrapper to render hook with provider
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <MemoryGameProvider>{children}</MemoryGameProvider>
+);
+
+describe('MemoryGameContext State Machine', () => {
+  beforeEach(() => {
+    // Clear localStorage before each test
+    localStorage.clear();
+    vi.restoreAllMocks();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('should initialize with default settings and states', () => {
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    // Check default settings
+    expect(result.current.startGrid).toBe(3);
+    expect(result.current.increaseGrid).toBe(1);
+    expect(result.current.colourSelect).toBe(6);
+    expect(result.current.roundTime).toBe(1);
+    expect(result.current.penaltyTime).toBe(1);
+
+    // Check default game state
+    expect(result.current.round).toBe(0);
+    expect(result.current.blocks).toBe(0);
+    expect(result.current.isMemorising).toBe(true);
+    expect(result.current.isCorrect).toBe(true);
+    expect(result.current.statusMessage).toBe('Press Start');
+    expect(result.current.memoryGrid).toBeNull();
+  });
+
+  it('should allow updating settings and persist to localStorage', async () => {
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    act(() => {
+      result.current.setStartGrid(5);
+      result.current.setIncreaseGrid(2);
+      result.current.setColourSelect(8);
+      result.current.setRoundTime(3);
+      result.current.setPenaltyTime(2);
+    });
+    await act(async () => {});
+
+    expect(result.current.startGrid).toBe(5);
+    expect(result.current.increaseGrid).toBe(2);
+    expect(result.current.colourSelect).toBe(8);
+    expect(result.current.roundTime).toBe(3);
+    expect(result.current.penaltyTime).toBe(2);
+
+    expect(localStorage.getItem('memory_setting_startGrid')).toBe('5');
+    expect(localStorage.getItem('memory_setting_increaseGrid')).toBe('2');
+    expect(localStorage.getItem('memory_setting_colourSelect')).toBe('8');
+    expect(localStorage.getItem('memory_setting_roundTime')).toBe('3');
+    expect(localStorage.getItem('memory_setting_penaltyTime')).toBe('2');
+  });
+
+  it('should start the game and initialize round 1', async () => {
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    act(() => {
+      result.current.startGame();
+    });
+    await act(async () => {});
+
+    expect(result.current.round).toBe(1);
+    expect(result.current.blocks).toBe(3); // default startGrid
+    expect(result.current.isMemorising).toBe(true);
+    expect(result.current.isCorrect).toBe(true);
+    expect(result.current.statusMessage).toBe('First Round');
+
+    expect(result.current.memoryGrid).not.toBeNull();
+    expect(result.current.memoryGrid?.length).toBe(3);
+
+    // Each block should have a valid colour pos
+    result.current.memoryGrid?.forEach((block, index) => {
+      expect(block.pos).toBe(index);
+      expect(block.colourPos).toBeLessThan(result.current.colourSelect);
+      expect(block.question).toBe(false);
+      expect(block.wrong).toBe(false);
+    });
+  });
+
+  it('should increment showTime every second and auto-transition to building mode when timer ends', async () => {
+    vi.useFakeTimers();
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    act(() => {
+      result.current.startGame();
+    });
+    await act(async () => {});
+
+    expect(result.current.showTime).toBe(0);
+    expect(result.current.memInterval).toBe(3); // startGrid (3) * roundTime (1)
+
+    // Advance timers by 1 second
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    await act(async () => {});
+    expect(result.current.showTime).toBe(1);
+
+    // Advance timers by 2 more seconds to trigger auto transition (total 3s)
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+    await act(async () => {});
+
+    expect(result.current.isMemorising).toBe(false);
+    expect(result.current.statusMessage).toBe('Build Blocks');
+    expect(result.current.showTime).toBe(0);
+
+    // Grid cells should turn into question blocks
+    expect(result.current.memoryGrid).not.toBeNull();
+    result.current.memoryGrid?.forEach(block => {
+      expect(block.question).toBe(true);
+      expect(block.colourPos).toBe(3); // default white block in recall phase
+    });
+  });
+
+  it('should immediately stop timer and turn into recall blocks when startRound is called', async () => {
+    vi.useFakeTimers();
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    act(() => {
+      result.current.startGame();
+    });
+    await act(async () => {});
+
+    // Advance slightly
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    await act(async () => {});
+    expect(result.current.showTime).toBe(1);
+    expect(result.current.isMemorising).toBe(true);
+
+    act(() => {
+      result.current.startRound();
+    });
+    await act(async () => {});
+
+    expect(result.current.isMemorising).toBe(false);
+    expect(result.current.showTime).toBe(0);
+    expect(result.current.statusMessage).toBe('Build Blocks');
+    expect(result.current.memoryGrid?.[0].question).toBe(true);
+  });
+
+  it('should update block color in active grid when updateMemoryGrid is called', async () => {
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    act(() => {
+      result.current.startGame();
+    });
+    await act(async () => {});
+
+    act(() => {
+      result.current.startRound();
+    });
+    await act(async () => {});
+
+    // Verify first block is white (colourPos 3) and a question
+    expect(result.current.memoryGrid?.[0].colourPos).toBe(3);
+    expect(result.current.memoryGrid?.[0].question).toBe(true);
+
+    act(() => {
+      result.current.updateMemoryGrid(0, 1, false); // place GREEN color at pos 0
+    });
+    await act(async () => {});
+
+    expect(result.current.memoryGrid?.[0].colourPos).toBe(1);
+    expect(result.current.memoryGrid?.[0].question).toBe(false);
+  });
+
+  it('should transition to next round when nextRound is called with correct block layout', async () => {
+    vi.useFakeTimers();
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    act(() => {
+      result.current.startGame();
+    });
+    await act(async () => {});
+
+    // Capture the correct answers (retained list)
+    const correctSequence = result.current.memoryGrid?.map(b => b.colourPos) || [];
+
+    act(() => {
+      result.current.startRound();
+    });
+    await act(async () => {});
+
+    // Reconstruct the correct sequence manually, flushing each one individually
+    for (let index = 0; index < correctSequence.length; index++) {
+      const colourPos = correctSequence[index];
+      act(() => {
+        result.current.updateMemoryGrid(index, colourPos, false);
+      });
+      await act(async () => {});
+    }
+
+    // Call next round
+    act(() => {
+      result.current.nextRound();
+    });
+    await act(async () => {});
+
+    expect(result.current.isCorrect).toBe(true);
+    expect(result.current.round).toBe(2);
+    expect(result.current.blocks).toBe(4); // incremented by increaseGrid (1)
+    expect(result.current.statusMessage).toBe('Correct');
+    expect(result.current.isMemorising).toBe(true);
+    expect(result.current.memoryGrid?.length).toBe(4);
+  });
+
+  it('should remain on current round, apply time penalty and outline wrong blocks if incorrect', async () => {
+    vi.useFakeTimers();
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    act(() => {
+      result.current.startGame();
+    });
+    await act(async () => {});
+
+    // Capture correct answers, find one that is wrong
+    const correctSequence = result.current.memoryGrid?.map(b => b.colourPos) || [];
+
+    act(() => {
+      result.current.startRound();
+    });
+    await act(async () => {});
+
+    // Intentionally construct an incorrect sequence (fill with wrong colors)
+    for (let index = 0; index < correctSequence.length; index++) {
+      const colourPos = correctSequence[index];
+      const wrongColour = (colourPos + 1) % result.current.colourSelect;
+      act(() => {
+        result.current.updateMemoryGrid(index, wrongColour, false);
+      });
+      await act(async () => {});
+    }
+
+    act(() => {
+      result.current.nextRound();
+    });
+    await act(async () => {});
+
+    expect(result.current.isCorrect).toBe(false);
+    expect(result.current.round).toBe(1); // stays on round 1
+    expect(result.current.timePenalty).toBe(1); // penaltyTime added
+    expect(result.current.statusMessage).toBe('Incorrect');
+    expect(result.current.isMemorising).toBe(true);
+
+    // Verify that the wrong cells are flagged
+    result.current.memoryGrid?.forEach(block => {
+      expect(block.wrong).toBe(true);
+    });
+  });
+
+  it('should reset all states when restart is called', async () => {
+    const { result } = renderHook(() => useMemoryGame(), { wrapper });
+
+    act(() => {
+      result.current.startGame();
+    });
+    await act(async () => {});
+
+    expect(result.current.round).toBe(1);
+
+    act(() => {
+      result.current.restart();
+    });
+    await act(async () => {});
+
+    expect(result.current.round).toBe(0);
+    expect(result.current.blocks).toBe(0);
+    expect(result.current.statusMessage).toBe('Press Start');
+    expect(result.current.memoryGrid).toBeNull();
+  });
+});

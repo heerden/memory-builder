@@ -1,8 +1,9 @@
 import React from 'react';
 import { MemoryGame } from './components/memory/MemoryGame';
+import memoryBuilderIcon from './assets/images/memory-builder-icon.png';
+import { version } from '../package.json';
 
 export const App: React.FC = () => {
-  const version = '2.0.0';
 
   return (
     <div className="container">
@@ -12,7 +13,7 @@ export const App: React.FC = () => {
           <h2 className="subtitle">Extend Your Memory</h2>
 
           <img 
-            src="/src/assets/images/memory-builder-icon.png" 
+            src={memoryBuilderIcon} 
             alt="Memory Builder Icon" 
             style={{ maxWidth: '120px', height: 'auto' }}
           />

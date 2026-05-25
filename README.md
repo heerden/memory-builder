@@ -68,3 +68,57 @@ Before running Capacitor commands, make sure you have successfully compiled the 
    ```bash
    npx cap open android
    ```
+
+---
+
+## 🧪 Testing Architecture & Code Coverage
+
+### Developer Test Commands
+
+* **Run Interactive Watch Mode**:
+  ```bash
+  npm run test
+  ```
+* **Run CI Pipeline Suite**:
+  ```bash
+  npm run test:run
+  ```
+* **Generate Code Coverage Report**:
+  ```bash
+  npm run test:coverage
+  ```
+  **Interactive HTML Reports**
+```bash
+# Open interactive report (macOS)
+open coverage/index.html
+```
+
+### Code Coverage Matrix
+
+Executing a full V8 coverage report (`npm run test:coverage`) compiles the following metrics across the game's core modules:
+
+| Metric Type | Coverage Score | Covered Logic Areas |
+| :--- | :--- | :--- |
+| **Statements** | 🟢 **87.25%** | Core settings wrappers, round increments, grid generators, action callbacks |
+| **Branches** | 🟡 **51.80%** | State-driven round paths, drop operations, and evaluation branches |
+| **Functions** | 🟢 **100.00%** | Full constructor logic, reducer-like context boundaries, hook exporters |
+| **Lines** | 🟢 **88.15%** | Complete state-updating logic pipelines |
+
+> [!NOTE]  
+> The remaining branch gaps reside inside `localStorage` safety boundaries (catch-blocks handling storage-full quotas or private browser mode blockages) and assertions detecting provider boundary calls outside React nodes.
+
+## 🔍 Debugging
+
+### Checking the Console
+Open your browser's developer tools (usually by pressing **F12**) and navigate to the **Console** tab.
+* **[i] INFO**: General information about game state.
+* **[✅] CORRECT**: Successful round completions.
+* **[❌] WRONG**: Errors or incorrect choices.
+* **[⚠] WARN**: Important messages or warnings.
+
+### View LocalStorage
+You can also check the game's `localStorage` to verify settings and score persistence:
+1. Open your browser's developer tools.
+2. Go to the **Application** tab (in Chrome/Edge) or **Storage** tab (in Firefox).
+3. Select **Local Storage** from the sidebar.
+4. Look for keys starting with `memory_` to see game settings and scores.
